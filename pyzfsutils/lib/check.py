@@ -6,16 +6,16 @@ import sys
 import subprocess
 import logging
 
-import zedenv.lib.zfs.linux
+import pyzfsutils.lib.zfs.linux
 
 
 def startup_check():
     system = check_system()
     if zfs_module_loaded() and zpool_exists():
         if system == "linux":
-            root_dataset = zedenv.lib.zfs.linux.mount_dataset("/")
+            root_dataset = pyzfsutils.lib.zfs.linux.mount_dataset("/")
         else:
-            raise RuntimeError(f"{system} is not yet supported by zedenv")
+            raise RuntimeError(f"{system} is not yet supported by pyzfsutils")
 
         if root_dataset is None:
             raise RuntimeError(
@@ -47,6 +47,6 @@ def zpool_exists():
             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     except subprocess.CalledProcessError:
         raise RuntimeError(
-            "No pool found, a zpool is required to use zedenv.\n")
+            "No pool found, a zpool is required to use pyzfsutils.\n")
 
     return True

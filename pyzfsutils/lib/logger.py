@@ -7,7 +7,7 @@ import logging.config
 import logging.handlers
 
 
-class ZELogger:
+class ZFSLogger:
 
     logger_config = {
         'version': 1,

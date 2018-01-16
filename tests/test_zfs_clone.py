@@ -1,8 +1,8 @@
 import pytest
 import datetime
 
-import zedenv.lib.zfs.utility as zfs_utility
-from zedenv.lib.zfs.command import ZFS
+import pyzfsutils.lib.zfs.utility as zfs_utility
+from pyzfsutils.lib.zfs.command import ZFS
 
 """zfs commands tests"""
 
@@ -11,7 +11,7 @@ require_root_dataset = pytest.mark.require_root_dataset
 
 def create_clone(root_dataset, snapname, properties: list=None, create_parent=False):
     clone_root = zfs_utility.dataset_parent(root_dataset)
-    clone_suffix = f"zedenv-{datetime.datetime.now().isoformat()}"
+    clone_suffix = f"pyzfsutils-{datetime.datetime.now().isoformat()}"
     try:
         ZFS.snapshot(root_dataset, snapname)
         ZFS.clone(f"{root_dataset}@{snapname}",
@@ -27,7 +27,7 @@ def create_clone(root_dataset, snapname, properties: list=None, create_parent=Fa
 @require_root_dataset
 def test_zfs_clone_successful(root_dataset, properties, create_parent):
     # Cannot parameterize, must be unique
-    snapname = f"zedenv-{datetime.datetime.now().isoformat()}"
+    snapname = f"pyzfsutils-{datetime.datetime.now().isoformat()}"
     print(f"Creating {root_dataset}@{snapname}")
     """ Test will pass if clone successful"""
     create_clone(root_dataset, snapname,
@@ -35,7 +35,7 @@ def test_zfs_clone_successful(root_dataset, properties, create_parent):
 
 
 @pytest.mark.parametrize("snapname", [
-        None, f"@zedenv-test", "", "@"
+        None, f"@pyzfsutils-test", "", "@"
     ])
 @pytest.mark.parametrize("properties", [None, [], ["compression=off"]])
 @pytest.mark.parametrize("create_parent", [True, False])

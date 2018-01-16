@@ -4,14 +4,14 @@
 TEST_POOL="${1:-zpool}"
 TEST_DATASET="${2:-${TEST_POOL}/ROOT/default}"
 
-ZEDENV_DIR="${PWD}/zfstests"
-TEST_DISK="${ZEDENV_DIR}/disk.img"
+ZDISKS_DIR="${PWD}/zfstests"
+TEST_DISK="${ZDISKS_DIR}/disk.img"
 
-ZPOOL_ROOT_MOUNTPOINT="${ZEDENV_DIR}/root"
+ZPOOL_ROOT_MOUNTPOINT="${ZDISKS_DIR}/root"
 
 modprobe zfs || exit 1
 
-mkdir -p ${ZEDENV_DIR} || exit 1
+mkdir -p ${ZDISKS_DIR} || exit 1
 
 truncate -s 100M "${TEST_DISK}" && zpool create "${TEST_POOL}" "${TEST_DISK}"
 if [ $? -ne 0 ]; then

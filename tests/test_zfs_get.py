@@ -1,7 +1,7 @@
 import pytest
 import datetime
 
-from zedenv.lib.zfs.command import ZFS
+from pyzfsutils.lib.zfs.command import ZFS
 
 
 """zfs commands tests"""

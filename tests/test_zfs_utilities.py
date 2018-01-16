@@ -3,8 +3,8 @@
 import pytest
 import datetime
 
-import zedenv.lib.zfs.utility as zfs_utility
-from zedenv.lib.zfs.command import ZFS
+import pyzfsutils.lib.zfs.utility as zfs_utility
+from pyzfsutils.lib.zfs.command import ZFS
 
 require_root_dataset = pytest.mark.require_root_dataset
 
@@ -18,7 +18,7 @@ test_dataset_names = {
 
 
 """
-Tests for function: zedenv.lib.zfs.utility.is_snapshot()
+Tests for function: pyzfsutils.lib.zfs.utility.is_snapshot()
 """
 
 
@@ -32,7 +32,7 @@ def test_is_not_snapshot(snapname):
 
 @require_root_dataset
 def test_is_snapshot(root_dataset):
-    snapname = f"zedenv-{datetime.datetime.now().isoformat()}"
+    snapname = f"pyzfsutils-{datetime.datetime.now().isoformat()}"
     """ Test will pass if snapshot successful"""
     ZFS.snapshot(root_dataset, snapname)
 
@@ -40,14 +40,14 @@ def test_is_snapshot(root_dataset):
 
 
 """
-Tests for function: zedenv.lib.zfs.utility.is_clone()
+Tests for function: pyzfsutils.lib.zfs.utility.is_clone()
 """
 
 
 @require_root_dataset
 def test_is_not_clone_valid_option(root_dataset):
     """Make sure valid ZFS options give 'False' if they're not a clone."""
-    snapname = f"zedenv-{datetime.datetime.now().isoformat()}"
+    snapname = f"pyzfsutils-{datetime.datetime.now().isoformat()}"
     """ Test will pass if snapshot successful"""
     ZFS.snapshot(root_dataset, snapname)
 
@@ -71,17 +71,17 @@ def test_is_not_clone_invalid_option(clonename):
 def test_is_clone(root_dataset):
     clone_root = zfs_utility.dataset_parent(root_dataset)
 
-    snapname = f"zedenv-{datetime.datetime.now().isoformat()}"
+    snapname = f"pyzfsutils-{datetime.datetime.now().isoformat()}"
     ZFS.snapshot(root_dataset, snapname)
 
-    clone_name = f"{clone_root}/zedenv-{datetime.datetime.now().isoformat()}"
+    clone_name = f"{clone_root}/pyzfsutils-{datetime.datetime.now().isoformat()}"
     ZFS.clone(f"{root_dataset}@{snapname}", clone_name)
 
     assert zfs_utility.is_clone(clone_name)
 
 
 """
-Tests for function: zedenv.lib.zfs.utility.dataset_parent()
+Tests for function: pyzfsutils.lib.zfs.utility.dataset_parent()
 """
 
 
@@ -91,7 +91,7 @@ def test_dataset_parent():
 
 
 """
-Tests for function: zedenv.lib.zfs.utility.dataset_child_name()
+Tests for function: pyzfsutils.lib.zfs.utility.dataset_child_name()
 """
 
 
@@ -101,7 +101,7 @@ def test_dataset_child_name():
 
 
 """
-Tests for function: zedenv.lib.zfs.utility.parent_dataset()
+Tests for function: pyzfsutils.lib.zfs.utility.parent_dataset()
 """
 
 

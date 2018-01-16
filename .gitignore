@@ -1,5 +1,5 @@
 # Project files
-!/zedenv/lib/**/*.py
+!/pyzfsutils/lib/**/*.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
