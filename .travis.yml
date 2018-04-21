@@ -1,0 +1,25 @@
+sudo: required
+dist: trusty
+
+language: python
+python:
+  - "3.6"
+
+cache:
+  pip: true
+  custom_install: true
+
+before_install:
+  - sudo scripts/travis/ubuntu-14_04/setup_zfs_requirements.sh
+  - sudo scripts/travis/common/create_test_root.sh
+
+branches:
+  only:
+    - /.*/ # Build all branches
+
+install:
+  - python setup.py install
+  - pip install '.[test]'
+
+script:
+  - sudo env "PATH=$PATH" pytest --pep8 --cov=pyzfsutils tests --root-dataset="zpool/ROOT/default"
