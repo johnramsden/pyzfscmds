@@ -47,10 +47,10 @@ def snapshot_parent_dataset(dataset):
     return dataset.rsplit('@', 1)[-2]
 
 
-def dataset_exists(target) -> bool:
+def dataset_exists(target, zfs_type="filesystem") -> bool:
 
     try:
-        ZFS.list(target)
+        ZFS.list(target, zfs_type)
     except RuntimeError:
         return False
 
