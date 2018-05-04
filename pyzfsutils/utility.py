@@ -1,6 +1,6 @@
 """ZFS library"""
 
-from pyzfsutils.lib.zfs.command import ZFS
+from pyzfsutils.command import ZFS
 
 """
 ZFS helper functions

@@ -23,4 +23,5 @@ install:
 
 script:
   - pytest --pep8
-  - sudo env "PATH=$PATH" pytest --cov=pyzfsutils tests --root-dataset="zpool/ROOT/default"
+  - pytest --cov=pyzfsutils tests
+  - sudo env "PATH=$PATH" pytest tests --root-dataset="zpool/ROOT/default"

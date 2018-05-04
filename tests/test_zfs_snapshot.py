@@ -3,7 +3,7 @@
 import pytest
 import datetime
 
-from pyzfsutils.lib.zfs.command import ZFS
+from pyzfsutils.command import ZFS
 
 require_root_dataset = pytest.mark.require_root_dataset
 
