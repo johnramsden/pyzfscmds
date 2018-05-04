@@ -20,8 +20,7 @@ def is_root_on_zfs():
 
     if root_dataset is None:
         raise RuntimeError(
-            "System is not booting off ZFS root dataset\n"
-            "A ZFS root dataset is required for boot environments.")
+            "System is not booting off ZFS root dataset\n")
 
     return True
 
