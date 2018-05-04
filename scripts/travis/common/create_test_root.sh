@@ -1,17 +1,17 @@
 #!/bin/sh
 
 # Defaults if none give on cli
-TEST_POOL="${1:-zpool}"
-TEST_DATASET="${2:-${TEST_POOL}/ROOT/default}"
+TEST_POOL="${TEST_POOL:-zpool}"
+TEST_DATASET="${TEST_DATASET:-${TEST_POOL}/ROOT/default}"
+ZDISKS_SUBDIR="${ZDISKS_SUBDIR:-zfstests}}"
+ZPOOL_MOUNTPOINT="${ZPOOL_MOUNTPOINT:-zpool}"
 
-ZDISKS_DIR="${PWD}/zfstests"
-TEST_DISK="${ZDISKS_DIR}/disk.img"
-
-ZPOOL_ROOT_MOUNTPOINT="${ZDISKS_DIR}/root"
+TEST_DISK="${PWD}/${ZDISKS_SUBDIR}/disk.img"
+ZPOOL_ROOT_MOUNTPOINT="${ZPOOL_MOUNTPOINT}/root"
 
 modprobe zfs || exit 1
 
-mkdir -p ${ZDISKS_DIR} || exit 1
+mkdir -p ${ZDISKS_SUBDIR} || exit 1
 
 truncate -s 100M "${TEST_DISK}" && zpool create "${TEST_POOL}" "${TEST_DISK}"
 if [ $? -ne 0 ]; then

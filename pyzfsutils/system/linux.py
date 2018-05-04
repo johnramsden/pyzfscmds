@@ -1,15 +1,18 @@
-def mount_dataset(mountpoint):
+def mountpoint_dataset(mountpoint):
     """
-    Check if 'zfs' mount.
-    return root dataset, or None if not found
+    Check if dataset is a 'zfs' mount.
+    return dataset, or None if not found
     """
 
     with open("/proc/mounts") as f:
         mount = next((ds for ds in f.read().splitlines() if f"{mountpoint} zfs" in ds), None)
 
-    if mount is None:
-        root_dataset = None
-    else:
-        root_dataset = mount.split(" ")[0]
+    return None if mount is None else mount.split(" ")[0]
 
-    return root_dataset
+
+def zfs_module_loaded():
+    with open("/proc/modules") as f:
+        if "zfs" not in f.read():
+            return False
+
+    return True

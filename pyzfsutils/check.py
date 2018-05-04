@@ -2,42 +2,36 @@
 Startup checks
 """
 
-import sys
 import subprocess
-import logging
+import platform
 
-import pyzfsutils.lib.zfs.linux
-
-
-def startup_check():
-    system = check_system()
-    if zfs_module_loaded() and zpool_exists():
-        if system == "linux":
-            root_dataset = pyzfsutils.lib.zfs.linux.mount_dataset("/")
-        else:
-            raise RuntimeError(f"{system} is not yet supported by pyzfsutils")
-
-        if root_dataset is None:
-            raise RuntimeError(
-                "System is not booting off ZFS root dataset\n"
-                "A ZFS root dataset is required for boot environments.")
+import pyzfsutils.system.linux as zfslinux
+import pyzfsutils.system.freebsd as zfsfreebsd
 
 
-def check_system():
-    # TODO: Add proper system checks
-    if True:
-        return "linux"
+def is_root_on_zfs():
+    system = check_valid_system()
+    if system == 'linux' and zfslinux.zfs_module_loaded() and zpool_exists():
+        root_dataset = zfslinux.mountpoint_dataset("/")
+    elif system == 'freebsd' and zfsfreebsd.zfs_module_loaded() and zpool_exists():
+        root_dataset = zfsfreebsd.mountpoint_dataset("/")
+    else:
+        raise RuntimeError(f"{system} is not yet supported by pyzfsutils")
 
-
-def zfs_module_loaded():
-    # Check 'zfs' module loaded
-    with open("/proc/modules") as f:
-        if "zfs" not in f.read():
-            raise RuntimeError(
-                "The ZFS module is not loaded.\n"
-                "Load the ZFS module with 'modprobe zfs'")
+    if root_dataset is None:
+        raise RuntimeError(
+            "System is not booting off ZFS root dataset\n"
+            "A ZFS root dataset is required for boot environments.")
 
     return True
+
+
+def check_valid_system():
+    valid_platforms = ['linux', 'freebsd']
+    system = platform.system().lower()
+    if system in valid_platforms:
+        return system
+    return None
 
 
 def zpool_exists():

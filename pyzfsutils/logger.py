@@ -2,7 +2,6 @@
 Common functions
 """
 
-import logging
 import logging.config
 import logging.handlers
 

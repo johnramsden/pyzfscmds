@@ -25,13 +25,20 @@ Installing
 Testing
 -------
 
-To test using pytest, run it from the tests directory with a zfs dataset.
+To test using pytest, run it from the tests directory with a zfs dataset
+mounted at ``/${dataset}``.
 
 .. code:: shell
 
     $ pytest --root-dataset="zpool/ROOT/default"
 
-To test coverage run pytest wuth the pytest-cov plugin.
+To test coverage, run ``pytest`` with the ``pytest-cov`` plugin.
+
+.. code:: shell
+
+    $ pytest --root-dataset="zpool/ROOT/default" --cov=pyzfsutils
+
+To test pep8, run ``pytest`` with the ``pytest-pep8`` plugin.
 
 .. code:: shell
 
