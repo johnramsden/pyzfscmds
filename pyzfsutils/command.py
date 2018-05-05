@@ -21,6 +21,13 @@ class ZFS:
                 call_args.extend(["-o", ",".join(columns)])
 
     @staticmethod
+    def _prepare_properties(properties: list):
+        if properties is not None:
+            prop_list = [["-o", prop] for prop in properties]
+            return list(itertools.chain.from_iterable(prop_list))
+        return []
+
+    @staticmethod
     def _run(command, arguments):
 
         zfs_call = ["zfs", command] + arguments
@@ -39,22 +46,82 @@ class ZFS:
     """
 
     @classmethod
+    def create_dataset(cls, filesystem: str, create_parent: bool = False,
+                       mounted: bool = True, properties: list = None):
+
+        if filesystem is None:
+            raise TypeError("Filesystem name cannot be of type 'None'")
+
+        call_args = []
+
+        if create_parent:
+            call_args = ["-p"]
+
+        if not mounted:
+            call_args.append('-u')
+
+        """
+        Combine all arguments with properties
+        """
+        call_args.extend(cls._prepare_properties(properties))
+
+        """
+        Specify source snapshot and filesystem
+        """
+        call_args.append(filesystem)
+
+        try:
+            return cls._run("create", call_args)
+        except subprocess.CalledProcessError as e:
+            raise RuntimeError(f"Failed to create {filesystem}\n{e.output}")
+
+    @classmethod
+    def create_zvol(cls, filesystem: str, blocksize: int, blocksize_suffix: str = "G",
+                    create_parent: bool = False, sparse: bool = True, properties: list = None):
+
+        if filesystem is None:
+            raise TypeError("Filesystem name cannot be of type 'None'")
+
+        call_args = []
+
+        if create_parent:
+            call_args = ["-p"]
+
+        if sparse:
+            call_args.append('-s')
+
+        # TODO: blocksize
+
+        """
+        Combine all arguments with properties
+        """
+        call_args.extend(cls._prepare_properties(properties))
+
+        """
+        Specify source snapshot and filesystem
+        """
+        call_args.append(filesystem)
+
+        try:
+            return cls._run("create", call_args)
+        except subprocess.CalledProcessError as e:
+            raise RuntimeError(f"Failed to create {filesystem}\n{e.output}")
+
+    @classmethod
     def clone(cls, snapname: str, filesystem: str, properties: list = None, create_parent=False):
 
         if snapname is None:
             raise TypeError("Snapshot name cannot be of type 'None'")
 
+        call_args = []
+
         if create_parent:
             call_args = ["-p"]
-        else:
-            call_args = []
 
         """
         Combine all arguments with properties
         """
-        if properties is not None:
-            prop_list = [["-o", prop] for prop in properties]
-            call_args.extend(list(itertools.chain.from_iterable(prop_list)))
+        call_args.extend(cls._prepare_properties(properties))
 
         """
         Specify source snapshot and filesystem
@@ -118,6 +185,32 @@ class ZFS:
             raise RuntimeError(f"Failed to get zfs properties of {target}")
 
     @classmethod
+    def snapshot(cls, filesystem: str, snapname: str, recursive=False, properties=None):
+
+        if snapname is None:
+            raise TypeError("Snapshot name cannot be of type 'None'")
+
+        call_args = []
+
+        if recursive:
+            call_args = ["-r"]
+
+        """
+        Combine all arguments with properties
+        """
+        call_args.extend(cls._prepare_properties(properties))
+
+        """
+        Specify source filesystem and  snapshot name
+        """
+        call_args.append(f"{filesystem}@{snapname}")
+
+        try:
+            cls._run("snapshot", call_args)
+        except subprocess.CalledProcessError:
+            raise RuntimeError(f"Failed to snapshot {filesystem}")
+
+    @classmethod
     def list(cls, target: str, recursive=False, depth: int = None, scripting=True,
              parsable=False, columns: list = None, zfs_types: list = None,
              sort_properties_ascending: list = None, sort_properties_descending: list = None):
@@ -160,30 +253,36 @@ class ZFS:
         except subprocess.CalledProcessError:
             raise RuntimeError(f"Failed to get zfs list of {target}")
 
-    @classmethod
-    def snapshot(cls, filesystem: str, snapname: str, recursive=False, properties=None):
 
-        if snapname is None:
-            raise TypeError("Snapshot name cannot be of type 'None'")
+class ZPOOL:
+    """
+    ZPOOL commands
+    """
+    @staticmethod
+    def argcheck_depth(call_args, depth):
+        if depth is not None:
+            if depth < 0:
+                raise RuntimeError("Depth cannot be negative")
+            call_args.extend(["-d", str(depth)])
 
-        if recursive:
-            call_args = ["-r"]
-        else:
-            call_args = []
+    @staticmethod
+    def argcheck_columns(call_args, columns):
+        if columns:
+            if "all" in columns:
+                call_args.extend(["-o", "all"])
+            else:
+                call_args.extend(["-o", ",".join(columns)])
 
-        """
-        Combine all arguments with properties
-        """
-        if properties is not None:
-            prop_list = [["-o", prop] for prop in properties]
-            call_args.extend(list(itertools.chain.from_iterable(prop_list)))
+    @staticmethod
+    def _run(command, arguments):
 
-        """
-        Specify source filesystem and  snapshot name
-        """
-        call_args.append(f"{filesystem}@{snapname}")
+        zfs_call = ["zpool", command] + arguments
 
         try:
-            cls._run("snapshot", call_args)
-        except subprocess.CalledProcessError:
-            raise RuntimeError(f"Failed to snapshot {filesystem}")
+            output = subprocess.check_output(zfs_call,
+                                             universal_newlines=True,
+                                             stderr=subprocess.PIPE)
+        except subprocess.CalledProcessError as e:
+            raise e
+
+        return output
