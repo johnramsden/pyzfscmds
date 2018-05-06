@@ -1,6 +1,6 @@
 """ZFS library"""
 
-from pyzfsutils.command import ZFS
+import pyzfsutils.cmd
 
 """
 ZFS helper functions
@@ -21,9 +21,9 @@ Check if clone, raise if not valid dataset
 
 def is_clone(dataset) -> bool:
     try:
-        origin = ZFS.get(dataset,
-                         properties=["origin"],
-                         columns=["value"])
+        origin = pyzfsutils.cmd.zfs_get(dataset,
+                                        properties=["origin"],
+                                        columns=["value"])
         print(origin)
     except RuntimeError:
         raise
@@ -50,7 +50,7 @@ def snapshot_parent_dataset(dataset):
 def dataset_exists(target, zfs_type="filesystem") -> bool:
 
     try:
-        ZFS.list(target, zfs_type)
+        pyzfsutils.cmd.zfs_list(target, zfs_type)
     except RuntimeError:
         return False
 

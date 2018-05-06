@@ -1,7 +1,6 @@
 import pytest
 
-from pyzfsutils.command import ZFS
-
+import pyzfsutils.cmd
 
 """zfs commands tests"""
 
@@ -9,16 +8,16 @@ require_root_dataset = pytest.mark.require_root_dataset
 
 
 @pytest.mark.parametrize("recursive", [True, False])
-@pytest.mark.parametrize("depth",     [None, 0, 1])
+@pytest.mark.parametrize("depth", [None, 0, 1])
 @pytest.mark.parametrize("scripting", [True, False])
-@pytest.mark.parametrize("parsable",  [True, False])
+@pytest.mark.parametrize("parsable", [True, False])
 @pytest.mark.parametrize("columns", [
-        None, ["name"], ["name", "used", "available", "referenced", "mountpoint"],
-    ])
-@pytest.mark.parametrize("zfs_types",  [
-        None, [], ["all"], ["filesystem", "snapshot"]
-    ])
-@pytest.mark.parametrize("sort_properties_ascending",  [None, [], ["compression"]])
+    None, ["name"], ["name", "used", "available", "referenced", "mountpoint"],
+])
+@pytest.mark.parametrize("zfs_types", [
+    None, [], ["all"], ["filesystem", "snapshot"]
+])
+@pytest.mark.parametrize("sort_properties_ascending", [None, [], ["compression"]])
 @pytest.mark.parametrize("sort_properties_descending", [None, [], ["compression"]])
 @require_root_dataset
 def test_zfs_list_successful(root_dataset, recursive, depth, scripting, parsable, columns,
@@ -30,15 +29,15 @@ def test_zfs_list_successful(root_dataset, recursive, depth, scripting, parsable
         [-t type[,type]...] [-s property]... [-S property]...
         filesystem|volume|snapshot
     """
-    ZFS.list(root_dataset,
-             recursive=recursive,
-             depth=depth,
-             scripting=scripting,
-             parsable=parsable,
-             columns=columns,
-             zfs_types=zfs_types,
-             sort_properties_ascending=sort_properties_ascending,
-             sort_properties_descending=sort_properties_descending)
+    pyzfsutils.cmd.zfs_list(root_dataset,
+                            recursive=recursive,
+                            depth=depth,
+                            scripting=scripting,
+                            parsable=parsable,
+                            columns=columns,
+                            zfs_types=zfs_types,
+                            sort_properties_ascending=sort_properties_ascending,
+                            sort_properties_descending=sort_properties_descending)
 
 
 # Incorrect options to test
@@ -47,7 +46,7 @@ def test_zfs_list_successful(root_dataset, recursive, depth, scripting, parsable
         # Test incorrect columns
         (['fakecolumn'], ['all'], ['compression'], ['compression']),
         (['fakecolumnone', 'fakecolumntwo'], ['all'], ['compression'], ['compression']),
-        ('notalist',  ['all'], ['compression'], ['compression']),
+        ('notalist', ['all'], ['compression'], ['compression']),
         # Test incorrect zfs_types
         (['name'], ['notatype'], ['compression'], ['compression']),
         (['name'], 'notalist', ['compression'], ['compression']),
@@ -60,20 +59,19 @@ def test_zfs_list_successful(root_dataset, recursive, depth, scripting, parsable
     ])
 # Acceptable options
 @pytest.mark.parametrize("recursive", [True, False])
-@pytest.mark.parametrize("depth",     [None, 0, 1])
+@pytest.mark.parametrize("depth", [None, 0, 1])
 @pytest.mark.parametrize("scripting", [True, False])
-@pytest.mark.parametrize("parsable",  [True, False])
+@pytest.mark.parametrize("parsable", [True, False])
 @require_root_dataset
 def test_zfs_list_fails(root_dataset, recursive, depth, scripting, parsable, columns,
                         zfs_types, sort_properties_ascending, sort_properties_descending):
-
     with pytest.raises(RuntimeError):
-        ZFS.list(root_dataset,
-                 recursive=recursive,
-                 depth=depth,
-                 scripting=scripting,
-                 parsable=parsable,
-                 columns=columns,
-                 zfs_types=zfs_types,
-                 sort_properties_ascending=sort_properties_ascending,
-                 sort_properties_descending=sort_properties_descending)
+        pyzfsutils.cmd.zfs_list(root_dataset,
+                                recursive=recursive,
+                                depth=depth,
+                                scripting=scripting,
+                                parsable=parsable,
+                                columns=columns,
+                                zfs_types=zfs_types,
+                                sort_properties_ascending=sort_properties_ascending,
+                                sort_properties_descending=sort_properties_descending)
