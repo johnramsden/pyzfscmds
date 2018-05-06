@@ -9,7 +9,7 @@ ZFS helper functions
 
 def is_snapshot(snapname) -> bool:
     if "@" in snapname:
-        return dataset_exists(snapname)
+        return dataset_exists(snapname, zfs_type="snapshot")
 
     return False
 
@@ -50,7 +50,7 @@ def snapshot_parent_dataset(dataset):
 def dataset_exists(target, zfs_type="filesystem") -> bool:
 
     try:
-        pyzfsutils.cmd.zfs_list(target, zfs_type)
+        pyzfsutils.cmd.zfs_list(target, zfs_types=[zfs_type])
     except RuntimeError:
         return False
 

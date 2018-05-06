@@ -6,6 +6,8 @@ def pytest_addoption(parser):
                      help="Specify a root dataset to use.")
     parser.addoption("--zpool-root-mountpoint", action="store", default=None,
                      help="Specify a root mountpoint to use.")
+    parser.addoption("--unsafe", action="store_true",
+                     help="Specify test 'unsafe' commands.")
 
 
 def pytest_runtest_setup(item):
@@ -15,6 +17,9 @@ def pytest_runtest_setup(item):
     if 'require_zpool_root_mountpoint' in item.keywords and not item.config.getvalue(
                                                                     "zpool_root_mountpoint"):
         pytest.skip("Need --zpool-root-mountpoint option to run")
+
+    if 'require_unsafe' in item.keywords and not item.config.getvalue("unsafe"):
+        pytest.skip("Need --unsafe option to run")
 
 
 @pytest.fixture
@@ -27,3 +32,9 @@ def root_dataset(request):
 def zpool_root_mountpoint(request):
     """Specify a root dataset to use."""
     return request.config.getoption("--zpool-root-mountpoint")
+
+
+@pytest.fixture
+def unsafe(request):
+    """Specify test 'unsafe' commands."""
+    return request.config.getoption("--unsafe")
