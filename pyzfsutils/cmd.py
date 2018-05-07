@@ -2,7 +2,9 @@
 
 import itertools
 import subprocess
+import pyzfsutils.check
 import pyzfsutils.utility
+import pyzfsutils.system.agnostic
 
 """
 ZFS commands
@@ -11,8 +13,12 @@ ZFS commands
 
 class _Command:
 
-    def __init__(self, sub_command: str, options: list = None,
-                 properties: list = None, targets: list = None, main_command: str = "zfs"):
+    def __init__(self,
+                 sub_command: str,
+                 options: list = None,
+                 properties: list = None,
+                 targets: list = None,
+                 main_command: str = "zfs"):
         self.main_command = main_command
         self.sub_command = sub_command
         self.targets = targets
@@ -64,8 +70,10 @@ class _Command:
         return output
 
 
-def zfs_create_dataset(filesystem: str, create_parent: bool = False,
-                       mounted: bool = True, properties: list = None):
+def zfs_create_dataset(filesystem: str,
+                       create_parent: bool = False,
+                       mounted: bool = True,
+                       properties: list = None):
     """
      zfs create	[-pu] [-o property=value]... filesystem
     """
@@ -78,7 +86,10 @@ def zfs_create_dataset(filesystem: str, create_parent: bool = False,
         call_args.append('-p')
 
     if not mounted:
-        call_args.append('-u')
+        if pyzfsutils.check.check_valid_system() == "freebsd":
+            call_args.append('-u')
+        else:
+            raise SystemError("-u is not valid on this system")
 
     create = _Command("create", call_args, properties=properties, targets=[filesystem])
 
@@ -88,16 +99,17 @@ def zfs_create_dataset(filesystem: str, create_parent: bool = False,
         raise RuntimeError(f"Failed to create {filesystem}\n{e.output}\n")
 
 
-def zfs_create_zvol(filesystem: str,
-                    blocksize: int,
-                    blocksize_suffix: str = "G",
+def zfs_create_zvol(volume: str,
+                    size: int,
+                    size_suffix: str = "G",
+                    blocksize: int = None,
                     create_parent: bool = False,
-                    sparse: bool = True,
+                    sparse: bool = False,
                     properties: list = None):
     """
      zfs create	[-ps] [-b blocksize] [-o property=value]... -V size volume
     """
-    if filesystem is None:
+    if volume is None:
         raise TypeError("Filesystem name cannot be of type 'None'")
 
     call_args = []
@@ -108,14 +120,17 @@ def zfs_create_zvol(filesystem: str,
     if sparse:
         call_args.append('-s')
 
-    call_args.extend(['-b', f"{str(blocksize)}{blocksize_suffix}"])
+    if blocksize:
+        call_args.extend(['-b', str(blocksize)])
 
-    command = _Command("create", call_args, properties=properties, targets=[filesystem])
+    call_args.extend(['-V', f"{str(size)}{size_suffix}"])
+
+    command = _Command("create", call_args, properties=properties, targets=[volume])
 
     try:
         return command.run()
     except subprocess.CalledProcessError as e:
-        raise RuntimeError(f"Failed to create {filesystem}\n{e.output}\n")
+        raise RuntimeError(f"Failed to create {volume}\n{e.output}\n")
 
 
 def zfs_clone(snapname: str,

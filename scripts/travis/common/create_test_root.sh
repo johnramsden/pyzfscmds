@@ -13,7 +13,7 @@ modprobe zfs || exit 1
 
 mkdir -p ${ZDISKS_SUBDIR} || exit 1
 
-truncate -s 100M "${TEST_DISK}" && zpool create "${TEST_POOL}" "${TEST_DISK}"
+truncate -s 2G "${TEST_DISK}" && zpool create "${TEST_POOL}" "${TEST_DISK}"
 if [ $? -ne 0 ]; then
     echo "Failed to create test pool ""'""${TEST_POOL}""'"" with disk ""'""${TEST_DISK}"
     exit 1
