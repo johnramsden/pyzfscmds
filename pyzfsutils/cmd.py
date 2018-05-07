@@ -88,8 +88,12 @@ def zfs_create_dataset(filesystem: str, create_parent: bool = False,
         raise RuntimeError(f"Failed to create {filesystem}\n{e.output}\n")
 
 
-def zfs_create_zvol(filesystem: str, blocksize: int, blocksize_suffix: str = "G",
-                    create_parent: bool = False, sparse: bool = True, properties: list = None):
+def zfs_create_zvol(filesystem: str,
+                    blocksize: int,
+                    blocksize_suffix: str = "G",
+                    create_parent: bool = False,
+                    sparse: bool = True,
+                    properties: list = None):
     """
      zfs create	[-ps] [-b blocksize] [-o property=value]... -V size volume
     """
@@ -114,7 +118,11 @@ def zfs_create_zvol(filesystem: str, blocksize: int, blocksize_suffix: str = "G"
         raise RuntimeError(f"Failed to create {filesystem}\n{e.output}\n")
 
 
-def zfs_clone(snapname: str, filesystem: str, properties: list = None, create_parent=False):
+def zfs_clone(snapname: str,
+              filesystem: str,
+              properties: list = None,
+              create_parent: bool = False):
+
     if snapname is None:
         raise TypeError("Snapshot name cannot be of type 'None'")
 
@@ -131,7 +139,10 @@ def zfs_clone(snapname: str, filesystem: str, properties: list = None, create_pa
         raise RuntimeError(f"Failed to clone {filesystem}\n{e.output}\n")
 
 
-def zfs_snapshot(filesystem: str, snapname: str, recursive=False, properties=None):
+def zfs_snapshot(filesystem: str,
+                 snapname: str,
+                 recursive: bool = False,
+                 properties: list = None):
     """
      zfs snapshot|snap [-r] [-o	property=value]...
      filesystem@snapname|volume@snapname
@@ -154,9 +165,15 @@ def zfs_snapshot(filesystem: str, snapname: str, recursive=False, properties=Non
         raise RuntimeError(f"Failed to snapshot {filesystem}\n{e.output}\n")
 
 
-def zfs_get(target: str, recursive=False, depth: int = None, scripting=True,
-            parsable=False, columns: list = None, zfs_types: list = None,
-            source: list = None, properties: list = None):
+def zfs_get(target: str,
+            recursive: bool = False,
+            depth: int = None,
+            scripting: bool = True,
+            parsable: bool = False,
+            columns: list = None,
+            zfs_types: list = None,
+            source: list = None,
+            properties: list = None):
     """
      zfs get [-r|-d depth] [-Hp] [-o all | field[,field]...] [-t
      type[,type]...] [-s source[,source]...] all | property[,property]...
@@ -401,124 +418,191 @@ def zfs_rename(target_source: str,
     except subprocess.CalledProcessError as e:
         raise RuntimeError(f"Failed to rename {target_source} to {target_dest}\n{e.output}\n")
 
-#
-# def zfs_set():
-#     """
-#      zfs set property=value [property=value]...	filesystem|volume|snapshot
-#
-#      Sets the property or list of properties to the	given value(s) for
-#      each dataset.	Only some properties can be edited. See	the "Proper-
-#      ties" section for more	information on what properties can be set and
-#      acceptable values. Numeric values can be specified as exact values,
-#      or in a human-readable	form with a suffix of B, K, M, G, T, P,	E, Z
-#      (for bytes, kilobytes,	megabytes, gigabytes, terabytes, petabytes,
-#      exabytes, or zettabytes, respectively). User properties can be	set on
-#      snapshots. For	more information, see the "User	Properties" section.
-#     """
-#     if x is None:
-#         raise TypeError(" name cannot be of type 'None'")
-#
-#     call_args = []
-#
-#     if y:
-#         call_args.append("-r")
-#
-#     command = _Command("rollback", call_args, targets=[])
-#
-#     try:
-#         return command.run()
-#     except subprocess.CalledProcessError as e:
-#         raise RuntimeError(f"Failed to \n{e.output}\n")
-#
-#
-# def zfs_inherit():
-#     """
-#      zfs inherit [-rS] property	filesystem|volume|snapshot...
-#
-#      Clears	the specified property,	causing	it to be inherited from	an
-#      ancestor, restored to default if no ancestor has the property set, or
-#      with the -S option reverted to	the received value if one exists.  See
-#      the "Properties" section for a	listing	of default values, and details
-#      on which properties can be inherited.
-#
-#      -r	 Recursively inherit the given property	for all	children.
-#
-#      -S	 Revert	the property to	the received value if one exists; oth-
-#          erwise	operate	as if the -S option was	not specified.
-#     """
-#     if x is None:
-#         raise TypeError(" name cannot be of type 'None'")
-#
-#     call_args = []
-#
-#     if y:
-#         call_args.append("-r")
-#
-#     command = _Command("rollback", call_args, targets=[])
-#
-#     try:
-#         return command.run()
-#     except subprocess.CalledProcessError as e:
-#         raise RuntimeError(f"Failed to \n{e.output}\n")
-#
-#
-# def zfs_upgrade():
-#     """
-#      zfs upgrade [-v]
-#
-#      Displays a list of file systems that are not the most recent version.
-#
-#      -v	 Displays ZFS filesystem versions supported by the current
-#          software. The current ZFS filesystem version and all previous
-#          supported versions are	displayed, along with an explanation
-#          of the	features provided with each version.
-#
-#      zfs upgrade [-r] [-V version] -a |	filesystem
-#
-#      Upgrades file systems to a new	on-disk	version. Once this is done,
-#      the file systems will no longer be accessible on systems running
-#      older versions	of the software.  "zfs send" streams generated from
-#      new snapshots of these	file systems cannot be accessed	on systems
-#      running older versions	of the software.
-#
-#      In general, the file system version is	independent of the pool	ver-
-#      sion. See zpool(8) for	information on the zpool upgrade command.
-#
-#      In some cases,	the file system	version	and the	pool version are
-#      interrelated and the pool version must	be upgraded before the file
-#      system	version	can be upgraded.
-#
-#      -r	 Upgrade the specified file system and all descendent file
-#          systems.
-#
-#      -V version
-#          Upgrade to the	specified version.  If the -V flag is not
-#          specified, this command upgrades to the most recent version.
-#          This option can only be used to increase the version number,
-#          and only up to	the most recent	version	supported by this
-#          software.
-#
-#      -a	 Upgrade all file systems on all imported pools.
-#
-#      filesystem
-#          Upgrade the specified file system.
-#     """
-#     if x is None:
-#         raise TypeError(" name cannot be of type 'None'")
-#
-#     call_args = []
-#
-#     if y:
-#         call_args.append("-r")
-#
-#     command = _Command("rollback", call_args, targets=[])
-#
-#     try:
-#         return command.run()
-#     except subprocess.CalledProcessError as e:
-#         raise RuntimeError(f"Failed to \n{e.output}\n")
-#
-#
+
+def zfs_set(target: str,
+            properties: list = None):
+    """
+     zfs set property=value [property=value]...	filesystem|volume|snapshot
+    """
+    if target is None:
+        raise TypeError("Target name cannot be of type 'None'")
+
+    target_list = properties + [target]
+
+    command = _Command("set", [], targets=target_list)
+
+    try:
+        return command.run()
+    except subprocess.CalledProcessError as e:
+        raise RuntimeError(f"Failed to \n{e.output}\n")
+
+
+def zfs_inherit(prop: str,
+                target: str,
+                recursive: bool = False,
+                revert: bool = False):
+    """
+     zfs inherit [-rS] property	filesystem|volume|snapshot...
+    """
+    if prop is None:
+        raise TypeError("Property name cannot be of type 'None'")
+
+    if target is None:
+        raise TypeError("Target name cannot be of type 'None'")
+
+    call_args = []
+
+    if recursive:
+        call_args.append("-r")
+
+    if revert:
+        call_args.append("-S")
+
+    command = _Command("inherit", call_args, targets=[prop, target])
+
+    try:
+        return command.run()
+    except subprocess.CalledProcessError as e:
+        raise RuntimeError(f"Failed to inherit property\n{e.output}\n")
+
+
+def zfs_upgrade_list(supported: bool = False):
+    """
+     zfs upgrade [-v]
+
+     Displays a list of file systems that are not the most recent version.
+
+     -v	 Displays ZFS filesystem versions supported by the current
+         software. The current ZFS filesystem version and all previous
+         supported versions are	displayed, along with an explanation
+         of the	features provided with each version.
+     """
+    call_args = []
+    if supported:
+        call_args.append("-v")
+
+    command = _Command("upgrade", call_args)
+
+    try:
+        return command.run()
+    except subprocess.CalledProcessError as e:
+        raise RuntimeError(f"Failed to list upgradeable filesystems\n{e.output}\n")
+
+
+def zfs_upgrade(target: str = None,
+                descendent: bool = False,
+                version: str = None,
+                upgrade_all: bool = False):
+    """
+    zfs upgrade [-r] [-V version] -a |	filesystem
+    """
+    if target is not None and upgrade_all is not None:
+        raise RuntimeError("Both target and upgrade all cannot be true")
+
+    call_args = []
+
+    if descendent:
+        call_args.append("-r")
+
+    if upgrade_all:
+        call_args.append("-a")
+
+    if version is not None:
+        call_args.extend(["-V", version])
+
+    targets = [target] if target is not None else []
+
+    command = _Command("upgrade", call_args, targets=targets)
+
+    try:
+        return command.run()
+    except subprocess.CalledProcessError as e:
+        raise RuntimeError(f"Failed to run upgrade\n{e.output}\n")
+
+
+def zfs_mount_list(force: bool = False):
+    """
+     zfs mount
+
+     Displays all ZFS file systems currently mounted.
+
+     -f
+     """
+    call_args = []
+    if force:
+        call_args.append("-f")
+
+    command = _Command("mount", call_args)
+
+    try:
+        return command.run()
+    except subprocess.CalledProcessError as e:
+        raise RuntimeError(f"Failed to \n{e.output}\n")
+
+
+def zfs_mount(target: str = None,
+              progress: bool = False,
+              overlay: bool = False,
+              properties: list = None,
+              mount_all: bool = False):
+    """
+
+     zfs mount [-vO] [-o property[,property]...] -a | filesystem
+    """
+    if target is not None and mount_all is not None:
+        raise RuntimeError("Both target and unmount all cannot be true")
+
+    call_args = []
+
+    if progress:
+        call_args.append("-v")
+
+    if overlay:
+        call_args.append("-O")
+
+    if mount_all:
+        call_args.append("-a")
+
+    if properties:
+        call_args.extend(["-o", ",".join(properties)])
+
+    targets = [target] if target is not None else []
+
+    command = _Command("mount", call_args, targets=targets)
+
+    try:
+        return command.run()
+    except subprocess.CalledProcessError as e:
+        raise RuntimeError(f"Failed to mount target\n{e.output}\n")
+
+
+def zfs_unmount(target: str = None,
+                force: bool = False,
+                unmount_all: bool = False):
+    """
+     zfs unmount|umount	[-f] -a	| filesystem|mountpoint
+    """
+    if target is not None and unmount_all is not None:
+        raise RuntimeError("Both target and unmount all cannot be true")
+
+    call_args = []
+
+    if force:
+        call_args.append("-f")
+
+    if unmount_all:
+        call_args.append("-a")
+
+    targets = [target] if target is not None else []
+
+    command = _Command("unmount", call_args, targets=targets)
+
+    try:
+        return command.run()
+    except subprocess.CalledProcessError as e:
+        raise RuntimeError(f"Failed to unmount {target}\n{e.output}\n")
+
+# TODO: Unimplemented:
 # def zfs_userspace():
 #     """
 #      zfs userspace [-Hinp] [-o field[,field]...] [-s field]... [-S field]...
@@ -599,80 +683,6 @@ def zfs_rename(target_source: str,
 #         raise RuntimeError(f"Failed to \n{e.output}\n")
 #
 #
-# def zfs_mount():
-#     """
-#      zfs mount
-#
-#      Displays all ZFS file systems currently mounted.
-#
-#      -f
-#
-#      zfs mount [-vO] [-o property[,property]...] -a | filesystem
-#
-#      Mounts	ZFS file systems.
-#
-#      -v	 Report	mount progress.
-#
-#      -O	 Perform an overlay mount. Overlay mounts are not supported on
-#          FreeBSD.
-#
-#      -o property[,property]...
-#          An optional, comma-separated list of mount options to use
-#          temporarily for the duration of the mount. See	the "Temporary
-#          Mount Point Properties" section for details.
-#
-#      -a	 Mount all available ZFS file systems.	This command may be
-#          executed on FreeBSD system startup by /etc/rc.d/zfs.  For
-#          more information, see variable	zfs_enable in rc.conf(5).
-#
-#      filesystem
-#          Mount the specified filesystem.
-#     """
-#     if x is None:
-#         raise TypeError(" name cannot be of type 'None'")
-#
-#     call_args = []
-#
-#     if y:
-#         call_args.append("-r")
-#
-#     command = _Command("rollback", call_args, targets=[])
-#
-#     try:
-#         return command.run()
-#     except subprocess.CalledProcessError as e:
-#         raise RuntimeError(f"Failed to \n{e.output}\n")
-#
-#
-# def zfs_unmount():
-#     """
-#      zfs unmount|umount	[-f] -a	| filesystem|mountpoint
-#
-#      Unmounts currently mounted ZFS	file systems.
-#
-#      -f	 Forcefully unmount the	file system, even if it	is currently
-#          in use.
-#
-#      -a	 Unmount all available ZFS file	systems.
-#
-#      filesystem | mountpoint
-#          Unmount the specified filesystem. The command can also	be
-#          given a path to a ZFS file system mount point on the system.
-#     """
-#     if x is None:
-#         raise TypeError(" name cannot be of type 'None'")
-#
-#     call_args = []
-#
-#     if y:
-#         call_args.append("-r")
-#
-#     command = _Command("rollback", call_args, targets=[])
-#
-#     try:
-#         return command.run()
-#     except subprocess.CalledProcessError as e:
-#         raise RuntimeError(f"Failed to \n{e.output}\n")
 #
 #
 # def zfs_share():
