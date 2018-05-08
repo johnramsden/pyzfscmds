@@ -535,19 +535,14 @@ def zfs_upgrade(target: str = None,
         raise RuntimeError(f"Failed to run upgrade\n{e.output}\n")
 
 
-def zfs_mount_list(force: bool = False):
+def zfs_mount_list():
     """
      zfs mount
 
      Displays all ZFS file systems currently mounted.
-
-     -f
      """
-    call_args = []
-    if force:
-        call_args.append("-f")
 
-    command = _Command("mount", call_args)
+    command = _Command("mount", [])
 
     try:
         return command.run()

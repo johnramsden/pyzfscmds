@@ -4,7 +4,8 @@ import pyzfsutils.cmd
 
 """zfs commands tests"""
 
-require_root_dataset = pytest.mark.require_root_dataset
+require_zpool = pytest.mark.require_zpool
+require_test_dataset = pytest.mark.require_test_dataset
 
 
 @pytest.mark.parametrize("recursive", [True, False])
@@ -28,11 +29,12 @@ require_root_dataset = pytest.mark.require_root_dataset
 @pytest.mark.parametrize("properties", [
     None, ["all"], ["mountpoint", "canmount"]
 ])
-@require_root_dataset
-def test_zfs_get_successful(root_dataset, recursive, depth, scripting,
+@require_zpool
+@require_test_dataset
+def test_zfs_get_successful(zpool, test_dataset, recursive, depth, scripting,
                             parsable, columns, zfs_types, source, properties):
     """ Test will pass if get successful"""
-    pyzfsutils.cmd.zfs_get(root_dataset,
+    pyzfsutils.cmd.zfs_get("/".join([zpool, test_dataset]),
                            recursive=recursive,
                            depth=depth,
                            scripting=scripting,
@@ -65,12 +67,13 @@ def test_zfs_get_successful(root_dataset, recursive, depth, scripting,
 @pytest.mark.parametrize("depth", [None, 0, 1])
 @pytest.mark.parametrize("scripting", [True, False])
 @pytest.mark.parametrize("parsable", [True, False])
-@require_root_dataset
-def test_zfs_get_fails(root_dataset, recursive, depth, scripting,
+@require_zpool
+@require_test_dataset
+def test_zfs_get_fails(zpool, test_dataset, recursive, depth, scripting,
                        parsable, columns, zfs_types, source, properties):
-    """ Test will fail if get unsuccessful"""
+
     with pytest.raises(RuntimeError):
-        pyzfsutils.cmd.zfs_get(root_dataset,
+        pyzfsutils.cmd.zfs_get("/".join([zpool, test_dataset]),
                                recursive=recursive,
                                depth=depth,
                                scripting=scripting,

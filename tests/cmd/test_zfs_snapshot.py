@@ -5,7 +5,8 @@ import pytest
 
 import pyzfsutils.cmd
 
-require_root_dataset = pytest.mark.require_root_dataset
+require_zpool = pytest.mark.require_zpool
+require_test_dataset = pytest.mark.require_test_dataset
 
 
 # Incorrect options to test
@@ -17,10 +18,11 @@ require_root_dataset = pytest.mark.require_root_dataset
 ])
 # Acceptable options
 @pytest.mark.parametrize("recursive", [True, False])
-@require_root_dataset
-def test_zfs_snapshot_name_fails(root_dataset, snapname, recursive, properties):
+@require_zpool
+@require_test_dataset
+def test_zfs_snapshot_name_fails(zpool, test_dataset, snapname, recursive, properties):
     with pytest.raises((TypeError, RuntimeError)):
-        pyzfsutils.cmd.zfs_snapshot(root_dataset, snapname,
+        pyzfsutils.cmd.zfs_snapshot("/".join([zpool, test_dataset]), snapname,
                                     recursive=recursive, properties=properties)
 
 
@@ -30,11 +32,12 @@ def test_zfs_snapshot_name_fails(root_dataset, snapname, recursive, properties):
 ])
 # Acceptable options
 @pytest.mark.parametrize("recursive", [True, False])
-@require_root_dataset
-def test_zfs_snapshot_property_fails(root_dataset, recursive, properties):
+@require_zpool
+@require_test_dataset
+def test_zfs_snapshot_property_fails(zpool, test_dataset, recursive, properties):
     snapname = f"@pyzfsutils-{datetime.datetime.now().isoformat()}"
     with pytest.raises(RuntimeError):
-        pyzfsutils.cmd.zfs_snapshot(root_dataset, snapname,
+        pyzfsutils.cmd.zfs_snapshot("/".join([zpool, test_dataset]), snapname,
                                     recursive=recursive, properties=properties)
 
 
@@ -47,9 +50,10 @@ def test_zfs_snapshot_nonexistant_dataset_fails():
 @pytest.mark.parametrize("recursive", [True, False])
 @pytest.mark.parametrize("properties", [None, [
     "pyzfsutils:user_prop=on", "pyzfsutils:otheruser_prop=on"]])
-@require_root_dataset
-def test_zfs_snapshot_successful(root_dataset, recursive, properties):
+@require_zpool
+@require_test_dataset
+def test_zfs_snapshot_successful(zpool, test_dataset, recursive, properties):
     snapname = f"pyzfsutils-{datetime.datetime.now().isoformat()}"
     """ Test will pass if snapshot successful"""
-    pyzfsutils.cmd.zfs_snapshot(root_dataset, snapname,
+    pyzfsutils.cmd.zfs_snapshot("/".join([zpool, test_dataset]), snapname,
                                 recursive=recursive, properties=properties)

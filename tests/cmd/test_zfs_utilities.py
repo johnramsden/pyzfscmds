@@ -7,7 +7,9 @@ import pytest
 import pyzfsutils.cmd
 import pyzfsutils.utility as zfs_utility
 
-require_root_dataset = pytest.mark.require_root_dataset
+require_zpool = pytest.mark.require_zpool
+require_test_dataset = pytest.mark.require_test_dataset
+
 
 """Test variables"""
 
@@ -30,13 +32,15 @@ def test_is_not_snapshot(snapname):
     assert zfs_utility.is_snapshot(snapname) is False
 
 
-@require_root_dataset
-def test_is_snapshot(root_dataset):
+@require_zpool
+@require_test_dataset
+def test_is_snapshot(zpool, test_dataset):
     snapname = f"pyzfsutils-{datetime.datetime.now().isoformat()}"
-    """ Test will pass if snapshot successful"""
-    pyzfsutils.cmd.zfs_snapshot(root_dataset, snapname)
+    dataset = "/".join([zpool, test_dataset])
 
-    assert zfs_utility.is_snapshot(f"{root_dataset}@{snapname}")
+    pyzfsutils.cmd.zfs_snapshot(dataset, snapname)
+
+    assert zfs_utility.is_snapshot(f"{dataset}@{snapname}")
 
 
 """
@@ -44,15 +48,17 @@ Tests for function: pyzfsutils.lib.zfs.utility.is_clone()
 """
 
 
-@require_root_dataset
-def test_is_not_clone_valid_option(root_dataset):
+@require_zpool
+@require_test_dataset
+def test_is_not_clone_valid_option(zpool, test_dataset):
     """Make sure valid ZFS options give 'False' if they're not a clone."""
     snapname = f"pyzfsutils-{datetime.datetime.now().isoformat()}"
-    """ Test will pass if snapshot successful"""
-    pyzfsutils.cmd.zfs_snapshot(root_dataset, snapname)
+    dataset = "/".join([zpool, test_dataset])
+
+    pyzfsutils.cmd.zfs_snapshot(dataset, snapname)
 
     try:
-        dataset_is_clone = zfs_utility.is_clone(f"{root_dataset}@{snapname}")
+        dataset_is_clone = zfs_utility.is_clone(f"{dataset}@{snapname}")
         print(dataset_is_clone)
     except RuntimeError:
         raise
@@ -67,15 +73,17 @@ def test_is_not_clone_invalid_option(clonename):
         zfs_utility.is_clone(clonename)
 
 
-@require_root_dataset
-def test_is_clone(root_dataset):
-    clone_root = zfs_utility.dataset_parent(root_dataset)
+@require_zpool
+@require_test_dataset
+def test_is_clone(zpool, test_dataset):
+    dataset = "/".join([zpool, test_dataset])
+    clone_root = zfs_utility.dataset_parent(dataset)
 
     snapname = f"pyzfsutils-{datetime.datetime.now().isoformat()}"
-    pyzfsutils.cmd.zfs_snapshot(root_dataset, snapname)
+    pyzfsutils.cmd.zfs_snapshot(dataset, snapname)
 
     clone_name = f"{clone_root}/pyzfsutils-{datetime.datetime.now().isoformat()}"
-    pyzfsutils.cmd.zfs_clone(f"{root_dataset}@{snapname}", clone_name)
+    pyzfsutils.cmd.zfs_clone(f"{dataset}@{snapname}", clone_name)
 
     assert zfs_utility.is_clone(clone_name)
 

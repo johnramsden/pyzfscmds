@@ -4,7 +4,8 @@ import pyzfsutils.cmd
 
 """zfs commands tests"""
 
-require_root_dataset = pytest.mark.require_root_dataset
+require_zpool = pytest.mark.require_zpool
+require_test_dataset = pytest.mark.require_test_dataset
 
 
 @pytest.mark.parametrize("recursive", [True, False])
@@ -19,8 +20,9 @@ require_root_dataset = pytest.mark.require_root_dataset
 ])
 @pytest.mark.parametrize("sort_properties_ascending", [None, [], ["compression"]])
 @pytest.mark.parametrize("sort_properties_descending", [None, [], ["compression"]])
-@require_root_dataset
-def test_zfs_list_successful(root_dataset, recursive, depth, scripting, parsable, columns,
+@require_zpool
+@require_test_dataset
+def test_zfs_list_successful(zpool, test_dataset, recursive, depth, scripting, parsable, columns,
                              zfs_types, sort_properties_ascending, sort_properties_descending):
     """ Test will pass if list successful"""
 
@@ -29,7 +31,7 @@ def test_zfs_list_successful(root_dataset, recursive, depth, scripting, parsable
         [-t type[,type]...] [-s property]... [-S property]...
         filesystem|volume|snapshot
     """
-    pyzfsutils.cmd.zfs_list(root_dataset,
+    pyzfsutils.cmd.zfs_list("/".join([zpool, test_dataset]),
                             recursive=recursive,
                             depth=depth,
                             scripting=scripting,
@@ -62,11 +64,12 @@ def test_zfs_list_successful(root_dataset, recursive, depth, scripting, parsable
 @pytest.mark.parametrize("depth", [None, 0, 1])
 @pytest.mark.parametrize("scripting", [True, False])
 @pytest.mark.parametrize("parsable", [True, False])
-@require_root_dataset
-def test_zfs_list_fails(root_dataset, recursive, depth, scripting, parsable, columns,
+@require_zpool
+@require_test_dataset
+def test_zfs_list_fails(zpool, test_dataset, recursive, depth, scripting, parsable, columns,
                         zfs_types, sort_properties_ascending, sort_properties_descending):
     with pytest.raises(RuntimeError):
-        pyzfsutils.cmd.zfs_list(root_dataset,
+        pyzfsutils.cmd.zfs_list("/".join([zpool, test_dataset]),
                                 recursive=recursive,
                                 depth=depth,
                                 scripting=scripting,

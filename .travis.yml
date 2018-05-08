@@ -12,6 +12,7 @@ cache:
 env:
   global:
   - TEST_POOL="zpool"
+  - PYTEST_DATASET="pyzfsutils/tests"
   - ZDISKS_SUBDIR="zfstests"
   - ZPOOL_MOUNTPOINT="/zpool"
 
@@ -28,11 +29,12 @@ install:
   - pip install '.[test]'
 
 script:
-  - pytest --pep8
-  - pytest --cov=pyzfsutils tests
   - |
-    sudo env "PATH=$PATH" pytest tests \
-                                 --unsafe \
-                                 --zpool="${TEST_POOL}" \
-                                 --root-dataset="${TEST_POOL}/ROOT/default" \
-                                 --zpool-root-mountpoint="${ZPOOL_MOUNTPOINT}/root"
+    sudo env "PATH=$PATH" \
+         pytest --pep8 --cov=pyzfsutils tests \
+                                        --unsafe \
+                                        --zpool="${TEST_POOL}" \
+                                        --test-dataset="${PYTEST_DATASET}" \
+                                        --root-dataset="${TEST_POOL}/ROOT/default" \
+                                        --zpool-root-mountpoint="${ZPOOL_MOUNTPOINT}/root"
+  - sudo zfs list
