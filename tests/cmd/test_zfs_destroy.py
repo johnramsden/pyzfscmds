@@ -5,6 +5,15 @@ import pytest
 import pyzfsutils.cmd
 import pyzfsutils.utility
 
+import os
+
+module_env = os.path.basename(__file__).upper().rsplit('.', 1)[0]
+if module_env in os.environ:
+    pytestmark = pytest.mark.skipif(
+        "false" in os.environ[module_env],
+        reason=f"Environment variable {module_env} specified test should be skipped.")
+
+
 """zfs commands tests"""
 
 require_zpool = pytest.mark.require_zpool

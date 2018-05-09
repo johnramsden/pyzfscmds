@@ -70,6 +70,103 @@ class _Command:
         return output
 
 
+"""
+zpool Commands
+"""
+
+
+def zpool_set(pool: str, prop: str):
+    """
+    zpool set property=value pool
+
+             Sets the given property on the specified pool.  See the
+             Properties section for more information on what properties
+             can be set and acceptable values.
+    """
+    if pool is None:
+        raise TypeError("Target name cannot be of type 'None'")
+
+    command = _Command("set", [],
+                       main_command="zpool",
+                       targets=[prop, pool])
+
+    try:
+        return command.run()
+    except subprocess.CalledProcessError as e:
+        raise RuntimeError(f"Failed to set pool property {prop}\n{e.output}\n")
+
+
+def zpool_get(pool: str,
+              scripting: bool = True,
+              properties: list = None,
+              columns: list = None,
+              parsable: bool = False):
+    """
+     zpool get [-Hp] [-o field[,field]...] all|property[,property]...
+             pool...
+             Retrieves the given list of properties (or all properties if
+             all is used) for the specified storage pool(s).  These prop‐
+             erties are displayed with the following fields:
+
+                     name          Name of storage pool
+                     property      Property name
+                     value         Property value
+                     source        Property source, either 'default' or 'local'.
+
+             See the Properties section for more information on the avail‐
+             able pool properties.
+
+             -H      Scripted mode.  Do not display headers, and separate
+                     fields by a single tab instead of arbitrary space.
+
+             -o field
+                     A comma-separated list of columns to display.
+                     name,property,value,source is the default value.
+
+             -p      Display numbers in parsable (exact) values.
+    """
+    if pool is None:
+        raise TypeError("Target name cannot be of type 'None'")
+
+    call_args = []
+
+    if scripting:
+        call_args.append("-H")
+
+    if parsable:
+        call_args.append("-p")
+
+    if properties is None:
+        property_target = "all"
+    elif properties:
+        if "all" in properties:
+            if len(properties) < 2:
+                property_target = "all"
+            else:
+                raise RuntimeError(f"Cannot use 'all' with other properties")
+        else:
+            property_target = ",".join(properties)
+    else:
+        raise RuntimeError(f"Cannot request no property type")
+
+    command = _Command("get", call_args,
+                       main_command="zpool",
+                       targets=[property_target, pool])
+
+    command.argcheck_columns(columns)
+
+    try:
+        return command.run()
+    except subprocess.CalledProcessError as e:
+        raise RuntimeError(f"Failed to get zfs property '{property_target}' "
+                           f"from {pool}\n{e.output}\n")
+
+
+"""
+zfs Commands
+"""
+
+
 def zfs_create_dataset(filesystem: str,
                        create_parent: bool = False,
                        mounted: bool = True,

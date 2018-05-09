@@ -1,4 +1,5 @@
 import pytest
+import datetime
 
 import pyzfsutils.cmd
 
@@ -16,12 +17,16 @@ require_zpool = pytest.mark.require_zpool
 require_test_dataset = pytest.mark.require_test_dataset
 
 
-@pytest.mark.parametrize("supported", [True, False])
-def test_zfs_upgrade_list_successful(supported):
-    pyzfsutils.cmd.zfs_upgrade_list(supported=supported)
-
-
+@pytest.mark.parametrize("prop", [
+    ["bootfs", "zpool"],
+    ["bootfs", ""],
+    ["comment", "Testcomment"],
+    ["comment", ""]
+])
 @require_zpool
-@require_test_dataset
-def test_zfs_upgrade_list_successful(zpool):
-    pyzfsutils.cmd.zfs_upgrade(target=zpool)
+def test_zpool_set_successful(zpool, prop):
+
+    pyzfsutils.cmd.zpool_set(zpool, "=".join(prop))
+
+    assert prop[1] in pyzfsutils.cmd.zpool_get(zpool,
+                                               properties=[prop[0]])
