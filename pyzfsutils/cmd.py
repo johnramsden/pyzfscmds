@@ -434,17 +434,14 @@ def zfs_rename(target_source: str,
         raise RuntimeError(f"Failed to rename {target_source} to {target_dest}\n{e.output}\n")
 
 
-def zfs_set(target: str,
-            properties: list = None):
+def zfs_set(target: str, prop: str):
     """
      zfs set property=value [property=value]...	filesystem|volume|snapshot
     """
     if target is None:
         raise TypeError("Target name cannot be of type 'None'")
 
-    target_list = properties + [target]
-
-    command = _Command("set", [], targets=target_list)
+    command = _Command("set", [], targets=[prop, target])
 
     try:
         return command.run()
@@ -511,7 +508,7 @@ def zfs_upgrade(target: str = None,
     """
     zfs upgrade [-r] [-V version] -a |	filesystem
     """
-    if target is not None and upgrade_all is not None:
+    if target is not None and upgrade_all:
         raise RuntimeError("Both target and upgrade all cannot be true")
 
     call_args = []
