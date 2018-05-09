@@ -559,7 +559,7 @@ def zfs_mount(target: str = None,
 
      zfs mount [-vO] [-o property[,property]...] -a | filesystem
     """
-    if target is not None and mount_all is not None:
+    if target is not None and mount_all:
         raise RuntimeError("Both target and unmount all cannot be true")
 
     call_args = []
@@ -592,7 +592,7 @@ def zfs_unmount(target: str = None,
     """
      zfs unmount|umount	[-f] -a	| filesystem|mountpoint
     """
-    if target is not None and unmount_all is not None:
+    if target is not None and unmount_all:
         raise RuntimeError("Both target and unmount all cannot be true")
 
     call_args = []
