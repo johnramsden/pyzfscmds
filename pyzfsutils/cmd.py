@@ -99,7 +99,7 @@ def zpool_set(pool: str, prop: str) -> str:
         raise RuntimeError(f"Failed to set pool property {prop}\n{e.output}\n")
 
 
-def zpool_get(pool: str,
+def zpool_get(pool: str = None,
               scripting: bool = True,
               properties: list = None,
               columns: list = None,
@@ -128,9 +128,6 @@ def zpool_get(pool: str,
 
              -p      Display numbers in parsable (exact) values.
     """
-    if pool is None:
-        raise TypeError("Target name cannot be of type 'None'")
-
     call_args = []
 
     if scripting:
@@ -152,9 +149,13 @@ def zpool_get(pool: str,
     else:
         raise RuntimeError(f"Cannot request no property type")
 
+    target_list = [property_target]
+    if pool is not None:
+        target_list.append(pool)
+
     command = _Command("get", call_args,
                        main_command="zpool",
-                       targets=[property_target, pool])
+                       targets=target_list)
 
     command.argcheck_columns(columns)
 

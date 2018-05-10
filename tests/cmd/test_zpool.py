@@ -28,5 +28,5 @@ def test_zpool_set_successful(zpool, prop):
 
     pyzfsutils.cmd.zpool_set(zpool, "=".join(prop))
 
-    assert prop[1] in pyzfsutils.cmd.zpool_get(zpool,
+    assert prop[1] in pyzfsutils.cmd.zpool_get(pool=zpool,
                                                properties=[prop[0]])
