@@ -2,6 +2,9 @@
 
 import itertools
 import subprocess
+
+from typing import List
+
 import pyzfsutils.check
 import pyzfsutils.utility
 import pyzfsutils.system.agnostic
@@ -16,8 +19,8 @@ class _Command:
     def __init__(self,
                  sub_command: str,
                  options: list = None,
-                 properties: list = None,
-                 targets: list = None,
+                 properties: List[str] = None,
+                 targets: List[str] = None,
                  main_command: str = "zfs"):
         self.main_command = main_command
         self.sub_command = sub_command
@@ -29,7 +32,7 @@ class _Command:
             self.properties = self._prepare_properties(properties)
 
     @staticmethod
-    def _prepare_properties(properties: list):
+    def _prepare_properties(properties: List[str]) -> list:
         if properties is not None:
             prop_list = [["-o", prop] for prop in properties]
             return list(itertools.chain.from_iterable(prop_list))
@@ -75,7 +78,7 @@ zpool Commands
 """
 
 
-def zpool_set(pool: str, prop: str):
+def zpool_set(pool: str, prop: str) -> str:
     """
     zpool set property=value pool
 
@@ -100,7 +103,7 @@ def zpool_get(pool: str,
               scripting: bool = True,
               properties: list = None,
               columns: list = None,
-              parsable: bool = False):
+              parsable: bool = False) -> str:
     """
      zpool get [-Hp] [-o field[,field]...] all|property[,property]...
              pool...
@@ -170,7 +173,7 @@ zfs Commands
 def zfs_create_dataset(filesystem: str,
                        create_parent: bool = False,
                        mounted: bool = True,
-                       properties: list = None):
+                       properties: list = None) -> str:
     """
      zfs create	[-pu] [-o property=value]... filesystem
     """
@@ -202,7 +205,7 @@ def zfs_create_zvol(volume: str,
                     blocksize: int = None,
                     create_parent: bool = False,
                     sparse: bool = False,
-                    properties: list = None):
+                    properties: list = None) -> str:
     """
      zfs create	[-ps] [-b blocksize] [-o property=value]... -V size volume
     """
@@ -233,7 +236,7 @@ def zfs_create_zvol(volume: str,
 def zfs_clone(snapname: str,
               filesystem: str,
               properties: list = None,
-              create_parent: bool = False):
+              create_parent: bool = False) -> str:
 
     if snapname is None:
         raise TypeError("Snapshot name cannot be of type 'None'")
@@ -254,7 +257,7 @@ def zfs_clone(snapname: str,
 def zfs_snapshot(filesystem: str,
                  snapname: str,
                  recursive: bool = False,
-                 properties: list = None):
+                 properties: list = None) -> str:
     """
      zfs snapshot|snap [-r] [-o	property=value]...
      filesystem@snapname|volume@snapname
@@ -285,7 +288,7 @@ def zfs_get(target: str,
             columns: list = None,
             zfs_types: list = None,
             source: list = None,
-            properties: list = None):
+            properties: list = None) -> str:
     """
      zfs get [-r|-d depth] [-Hp] [-o all | field[,field]...] [-t
      type[,type]...] [-s source[,source]...] all | property[,property]...
@@ -341,7 +344,7 @@ def zfs_list(target: str,
              columns: list = None,
              zfs_types: list = None,
              sort_properties_ascending: list = None,
-             sort_properties_descending: list = None):
+             sort_properties_descending: list = None) -> str:
     """
      zfs list [-r|-d depth] [-Hp] [-o property[,property]...] [-t
      type[,type]...] [-s property]... [-S property]...
@@ -386,7 +389,7 @@ def zfs_destroy(target: str,
                 force_unmount: bool = False,
                 dry_run: bool = False,
                 machine_parsable: bool = False,
-                verbose: bool = False):
+                verbose: bool = False) -> str:
     """
     zfs destroy [-fnpRrv] filesystem|volume
     """
@@ -422,7 +425,7 @@ def zfs_destroy_snapshot(snapname: str,
                          dry_run: bool = False,
                          machine_parsable: bool = False,
                          verbose: bool = False,
-                         defer: bool = False):
+                         defer: bool = False) -> str:
     """
      zfs destroy [-dnpRrv] snapshot[%snapname][,...]
     """
@@ -479,7 +482,7 @@ def zfs_rollback(snapname: str,
         raise RuntimeError(f"Failed to rollback {snapname}\n{e.output}\n")
 
 
-def zfs_promote(clone: str):
+def zfs_promote(clone: str) -> str:
     """
      zfs promote clone-filesystem
     """
@@ -496,7 +499,7 @@ def zfs_rename(target_source: str,
                create_parents: bool = False,
                dont_remount: bool = False,
                force_unmount: bool = False,
-               recursive: bool = False,):
+               recursive: bool = False) -> str:
     """
      zfs rename	[-f] filesystem|volume|snapshot	filesystem|volume|snapshot
 
@@ -531,7 +534,7 @@ def zfs_rename(target_source: str,
         raise RuntimeError(f"Failed to rename {target_source} to {target_dest}\n{e.output}\n")
 
 
-def zfs_set(target: str, prop: str):
+def zfs_set(target: str, prop: str) -> str:
     """
      zfs set property=value [property=value]...	filesystem|volume|snapshot
     """
@@ -549,7 +552,7 @@ def zfs_set(target: str, prop: str):
 def zfs_inherit(prop: str,
                 target: str,
                 recursive: bool = False,
-                revert: bool = False):
+                revert: bool = False) -> str:
     """
      zfs inherit [-rS] property	filesystem|volume|snapshot...
     """
@@ -575,7 +578,7 @@ def zfs_inherit(prop: str,
         raise RuntimeError(f"Failed to inherit property\n{e.output}\n")
 
 
-def zfs_upgrade_list(supported: bool = False):
+def zfs_upgrade_list(supported: bool = False) -> str:
     """
      zfs upgrade [-v]
 
@@ -601,7 +604,7 @@ def zfs_upgrade_list(supported: bool = False):
 def zfs_upgrade(target: str = None,
                 descendent: bool = False,
                 version: str = None,
-                upgrade_all: bool = False):
+                upgrade_all: bool = False) -> str:
     """
     zfs upgrade [-r] [-V version] -a |	filesystem
     """
@@ -629,7 +632,7 @@ def zfs_upgrade(target: str = None,
         raise RuntimeError(f"Failed to run upgrade\n{e.output}\n")
 
 
-def zfs_mount_list():
+def zfs_mount_list() -> str:
     """
      zfs mount
 
@@ -648,7 +651,7 @@ def zfs_mount(target: str = None,
               progress: bool = False,
               overlay: bool = False,
               properties: list = None,
-              mount_all: bool = False):
+              mount_all: bool = False) -> str:
     """
 
      zfs mount [-vO] [-o property[,property]...] -a | filesystem
@@ -682,7 +685,7 @@ def zfs_mount(target: str = None,
 
 def zfs_unmount(target: str = None,
                 force: bool = False,
-                unmount_all: bool = False):
+                unmount_all: bool = False) -> str:
     """
      zfs unmount|umount	[-f] -a	| filesystem|mountpoint
     """
