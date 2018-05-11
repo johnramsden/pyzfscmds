@@ -7,7 +7,7 @@ ZFS helper functions
 """
 
 
-def is_snapshot(snapname) -> bool:
+def is_snapshot(snapname: str) -> bool:
     if "@" in snapname:
         return dataset_exists(snapname, zfs_type="snapshot")
 
@@ -19,7 +19,7 @@ Check if clone, raise if not valid dataset
 """
 
 
-def is_clone(dataset) -> bool:
+def is_clone(dataset: str) -> bool:
     try:
         origin = pyzfsutils.cmd.zfs_get(dataset,
                                         properties=["origin"],
@@ -34,20 +34,20 @@ def is_clone(dataset) -> bool:
     return True
 
 
-def dataset_parent(dataset):
+def dataset_parent(dataset: str) -> str:
     # TODO: Should I check ds valid?
     return dataset.rsplit('/', 1)[0]
 
 
-def dataset_child_name(dataset):
+def dataset_child_name(dataset: str) -> str:
     return dataset.rsplit('/', 1)[-1]
 
 
-def snapshot_parent_dataset(dataset):
+def snapshot_parent_dataset(dataset: str) -> str:
     return dataset.rsplit('@', 1)[-2]
 
 
-def dataset_exists(target, zfs_type="filesystem") -> bool:
+def dataset_exists(target: str, zfs_type: str = "filesystem") -> bool:
 
     try:
         pyzfsutils.cmd.zfs_list(target, zfs_types=[zfs_type])

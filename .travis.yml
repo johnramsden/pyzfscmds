@@ -35,14 +35,15 @@ install:
 script:
   - |
     sudo env "PATH=$PATH" \
-         pytest --pep8 --cov=pyzfsutils tests \
-                                        --unsafe \
-                                        --zpool="${TEST_POOL}" \
-                                        --test-dataset="${PYTEST_DATASET}" \
-                                        --root-dataset="${TEST_POOL}/ROOT/default" \
-                                        --zpool-root-mountpoint="${ZPOOL_MOUNTPOINT}/root"
+         pytest --cov=pyzfsutils tests \
+                                    --unsafe \
+                                    --zpool="${TEST_POOL}" \
+                                    --test-dataset="${PYTEST_DATASET}" \
+                                    --root-dataset="${TEST_POOL}/ROOT/default" \
+                                    --zpool-root-mountpoint="${ZPOOL_MOUNTPOINT}/root"
 
 after_script:
   - sudo zfs list
   - modinfo zfs | grep -iw version
   - modinfo spl | grep -iw version
+  - sudo pytest --pep8
