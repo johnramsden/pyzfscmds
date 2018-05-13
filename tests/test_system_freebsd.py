@@ -24,3 +24,13 @@ def test_freebsd_mount(zpool_root_mountpoint, root_dataset):
 
 def test_freebsd_mount_failure():
     assert zfsfreebsd.mountpoint_dataset("/garbage/mountpoint") is None
+
+
+def test_freebsd_dataset_mountpoint_failure():
+    assert zfsfreebsd.dataset_mountpoint("garbage/dataset") is None
+
+
+@require_zpool_root_mountpoint
+@require_root_dataset
+def test_freebsd_dataset_mountpoint(zpool_root_mountpoint, root_dataset):
+    assert zpool_root_mountpoint == zfsfreebsd.dataset_mountpoint(root_dataset)
