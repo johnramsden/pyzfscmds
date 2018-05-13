@@ -1,4 +1,4 @@
-def mountpoint_dataset(mountpoint):
+def mountpoint_dataset(mountpoint: str):
     """
     Check if dataset is a 'zfs' mount.
     return dataset, or None if not found

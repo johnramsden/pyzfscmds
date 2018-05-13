@@ -121,6 +121,13 @@ Tests for function: pyzfsutils.lib.zfs.utility.parent_dataset()
 """
 
 
-def test_snapshot_parent_dataset():
-    assert zfs_utility.snapshot_parent_dataset(
-        f"{test_dataset_names['root']}@my-snap") == test_dataset_names['root']
+@require_zpool
+@require_test_dataset
+def test_snapshot_parent_dataset(zpool, test_dataset):
+    snapname = f"pyzfsutils-{datetime.datetime.now().isoformat()}"
+    dataset = "/".join([zpool, test_dataset])
+    snapshot_dataset = "@".join([dataset, snapname])
+
+    pyzfsutils.cmd.zfs_snapshot(dataset, snapname)
+
+    assert zfs_utility.snapshot_parent_dataset(snapshot_dataset) == dataset

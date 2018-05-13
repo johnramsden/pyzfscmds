@@ -44,14 +44,14 @@ class _Command:
                 raise RuntimeError("Depth cannot be negative")
             self.call_args.extend(["-d", str(depth)])
 
-    def argcheck_columns(self, columns):
+    def argcheck_columns(self, columns: list):
         if columns:
             if "all" in columns:
                 self.call_args.extend(["-o", "all"])
             else:
                 self.call_args.extend(["-o", ",".join(columns)])
 
-    def run(self):
+    def run(self) -> str:
 
         arguments = self.call_args
 
