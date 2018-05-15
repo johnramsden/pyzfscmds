@@ -1,6 +1,5 @@
 from setuptools import setup, find_packages
-from os.path import abspath, dirname, join
-from subprocess import call
+import subprocess
 
 from pyzfsutils import __version__
 
@@ -23,9 +22,15 @@ def readme():
         return f.read()
 
 
+def vcs_release(version: str):
+    return version + '+git.' + subprocess.check_output(
+                                    ['git', 'rev-parse', '--short', 'HEAD'],
+                                    universal_newlines=True, stderr=subprocess.PIPE)
+
+
 setup(
     name='pyzfsutils',
-    version=__version__,
+    version=vcs_release(__version__),
     description='ZFS CLI Function Wrapper',
     long_description=readme(),
     url='http://github.com/johnramsden/pyzfsutils',
