@@ -26,7 +26,6 @@ def is_clone(dataset: str) -> bool:
         origin = pyzfsutils.cmd.zfs_get(dataset,
                                         properties=["origin"],
                                         columns=["value"])
-        print(origin)
     except RuntimeError:
         raise
 
