@@ -1,10 +1,9 @@
 import datetime
+import os
 
 import pytest
 
-import pyzfsutils.cmd
-
-import os
+import pyzfscmds.cmd
 
 module_env = os.path.basename(__file__).upper().rsplit('.', 1)[0]
 if module_env in os.environ:
@@ -30,15 +29,15 @@ def test_zfs_create_dataset_successful(zpool,
     # Cannot parameterize, must be unique
     dataset_name = "/".join([zpool,
                              test_dataset,
-                             f"pyzfsutils-{datetime.datetime.now().isoformat()}"])
+                             f"pyzfscmds-{datetime.datetime.now().isoformat()}"])
     print(f"Creating {dataset_name}")
 
-    pyzfsutils.cmd.zfs_create_dataset(dataset_name,
-                                      create_parent=create_parent,
-                                      properties=properties)
+    pyzfscmds.cmd.zfs_create_dataset(dataset_name,
+                                     create_parent=create_parent,
+                                     properties=properties)
 
 
-@pytest.mark.parametrize("name", [f"@pyzfsutils-test", "", "@"])
+@pytest.mark.parametrize("name", [f"@pyzfscmds-test", "", "@"])
 @pytest.mark.parametrize("properties", [None, [], ["compression=off"]])
 @pytest.mark.parametrize("create_parent", [True, False])
 # @pytest.mark.parametrize("mounted", [True, False])
@@ -52,9 +51,9 @@ def test_zfs_create_dataset_fails(zpool,
     print(f"Creating {zpool}/{name}")
 
     with pytest.raises((TypeError, RuntimeError)):
-        pyzfsutils.cmd.zfs_create_dataset(f"{zpool}/{test_dataset}/{name}",
-                                          create_parent=create_parent,
-                                          properties=properties)
+        pyzfscmds.cmd.zfs_create_dataset(f"{zpool}/{test_dataset}/{name}",
+                                         create_parent=create_parent,
+                                         properties=properties)
 
 
 @pytest.mark.parametrize("properties", [
@@ -75,18 +74,18 @@ def test_zfs_create_zvol_successful(zpool,
     # Cannot parameterize, must be unique
     volume_name = "/".join([zpool,
                             test_dataset,
-                            f"pyzfsutils-{datetime.datetime.now().isoformat()}"])
+                            f"pyzfscmds-{datetime.datetime.now().isoformat()}"])
     print(f"Creating {volume_name}")
-    pyzfsutils.cmd.zfs_create_zvol(volume_name,
-                                   size,
-                                   blocksize=blocksize,
-                                   sparse=sparse,
-                                   size_suffix="K",
-                                   create_parent=create_parent,
-                                   properties=properties)
+    pyzfscmds.cmd.zfs_create_zvol(volume_name,
+                                  size,
+                                  blocksize=blocksize,
+                                  sparse=sparse,
+                                  size_suffix="K",
+                                  create_parent=create_parent,
+                                  properties=properties)
 
 
-@pytest.mark.parametrize("name", [f"@pyzfsutils-test", "", "@"])
+@pytest.mark.parametrize("name", [f"@pyzfscmds-test", "", "@"])
 @pytest.mark.parametrize("properties", [
     None, [], ["compression=off", "primarycache=none"]])
 @pytest.mark.parametrize("create_parent", [True, False])
@@ -106,13 +105,13 @@ def test_zfs_create_zvol_fails(zpool,
     print(f"Creating {zpool}/{test_dataset}/{name}")
 
     with pytest.raises((TypeError, RuntimeError)):
-        pyzfsutils.cmd.zfs_create_zvol(f"{zpool}/{test_dataset}/{name}",
-                                       size,
-                                       blocksize=blocksize,
-                                       sparse=sparse,
-                                       size_suffix="K",
-                                       create_parent=create_parent,
-                                       properties=properties)
+        pyzfscmds.cmd.zfs_create_zvol(f"{zpool}/{test_dataset}/{name}",
+                                      size,
+                                      blocksize=blocksize,
+                                      sparse=sparse,
+                                      size_suffix="K",
+                                      create_parent=create_parent,
+                                      properties=properties)
 
 
 @pytest.mark.parametrize("properties", [
@@ -134,14 +133,14 @@ def test_zfs_create_zvol_fails_size(zpool,
 
     volume_name = "/".join([zpool,
                             test_dataset,
-                            f"pyzfsutils-{datetime.datetime.now().isoformat()}"])
+                            f"pyzfscmds-{datetime.datetime.now().isoformat()}"])
     print(f"Creating {volume_name}")
 
     with pytest.raises((TypeError, RuntimeError)):
-        pyzfsutils.cmd.zfs_create_zvol(volume_name,
-                                       size,
-                                       blocksize=blocksize,
-                                       sparse=sparse,
-                                       size_suffix="K",
-                                       create_parent=create_parent,
-                                       properties=properties)
+        pyzfscmds.cmd.zfs_create_zvol(volume_name,
+                                      size,
+                                      blocksize=blocksize,
+                                      sparse=sparse,
+                                      size_suffix="K",
+                                      create_parent=create_parent,
+                                      properties=properties)

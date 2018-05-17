@@ -1,9 +1,9 @@
+import os
+
 import pytest
 
-import pyzfsutils.system.linux as zfslinux
-import pyzfsutils.check
-
-import os
+import pyzfscmds.check
+import pyzfscmds.system.linux as zfslinux
 
 module_env = os.path.basename(__file__).upper().rsplit('.', 1)[0]
 if module_env in os.environ:
@@ -28,10 +28,10 @@ def test_linux_mount_failure():
 
 
 def test_system_startup_check():
-    assert pyzfsutils.check.check_valid_system() == "linux"
+    assert pyzfscmds.check.check_valid_system() == "linux"
 
 
 @require_zpool_root_mountpoint
 @require_root_dataset
 def test_mount(root_dataset, zpool_root_mountpoint):
-    assert zpool_root_mountpoint == pyzfsutils.system.linux.dataset_mountpoint(root_dataset)
+    assert zpool_root_mountpoint == pyzfscmds.system.linux.dataset_mountpoint(root_dataset)

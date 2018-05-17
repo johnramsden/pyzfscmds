@@ -5,9 +5,9 @@ import subprocess
 
 from typing import List
 
-import pyzfsutils.check
-import pyzfsutils.utility
-import pyzfsutils.system.agnostic
+import pyzfscmds.check
+import pyzfscmds.utility
+import pyzfscmds.system.agnostic
 
 """
 ZFS commands
@@ -127,6 +127,9 @@ def zpool_get(pool: str = None,
                      name,property,value,source is the default value.
 
              -p      Display numbers in parsable (exact) values.
+
+    NOTE: -o requires zfsonlinux 0.7.0
+    https://github.com/zfsonlinux/zfs/commit/2a8b84b747cb27a175aa3a45b8cdb293cde31886
     """
     call_args = []
 
@@ -187,7 +190,7 @@ def zfs_create_dataset(filesystem: str,
         call_args.append('-p')
 
     if not mounted:
-        if pyzfsutils.check.check_valid_system() == "freebsd":
+        if pyzfscmds.check.check_valid_system() == "freebsd":
             call_args.append('-u')
         else:
             raise SystemError("-u is not valid on this system")

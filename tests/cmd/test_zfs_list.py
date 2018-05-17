@@ -1,8 +1,8 @@
+import os
+
 import pytest
 
-import pyzfsutils.cmd
-
-import os
+import pyzfscmds.cmd
 
 module_env = os.path.basename(__file__).upper().rsplit('.', 1)[0]
 if module_env in os.environ:
@@ -39,15 +39,15 @@ def test_zfs_list_successful(zpool, test_dataset, recursive, depth, scripting, p
         [-t type[,type]...] [-s property]... [-S property]...
         filesystem|volume|snapshot
     """
-    pyzfsutils.cmd.zfs_list("/".join([zpool, test_dataset]),
-                            recursive=recursive,
-                            depth=depth,
-                            scripting=scripting,
-                            parsable=parsable,
-                            columns=columns,
-                            zfs_types=zfs_types,
-                            sort_properties_ascending=sort_properties_ascending,
-                            sort_properties_descending=sort_properties_descending)
+    pyzfscmds.cmd.zfs_list("/".join([zpool, test_dataset]),
+                           recursive=recursive,
+                           depth=depth,
+                           scripting=scripting,
+                           parsable=parsable,
+                           columns=columns,
+                           zfs_types=zfs_types,
+                           sort_properties_ascending=sort_properties_ascending,
+                           sort_properties_descending=sort_properties_descending)
 
 
 # Incorrect options to test
@@ -77,12 +77,12 @@ def test_zfs_list_successful(zpool, test_dataset, recursive, depth, scripting, p
 def test_zfs_list_fails(zpool, test_dataset, recursive, depth, scripting, parsable, columns,
                         zfs_types, sort_properties_ascending, sort_properties_descending):
     with pytest.raises(RuntimeError):
-        pyzfsutils.cmd.zfs_list("/".join([zpool, test_dataset]),
-                                recursive=recursive,
-                                depth=depth,
-                                scripting=scripting,
-                                parsable=parsable,
-                                columns=columns,
-                                zfs_types=zfs_types,
-                                sort_properties_ascending=sort_properties_ascending,
-                                sort_properties_descending=sort_properties_descending)
+        pyzfscmds.cmd.zfs_list("/".join([zpool, test_dataset]),
+                               recursive=recursive,
+                               depth=depth,
+                               scripting=scripting,
+                               parsable=parsable,
+                               columns=columns,
+                               zfs_types=zfs_types,
+                               sort_properties_ascending=sort_properties_ascending,
+                               sort_properties_descending=sort_properties_descending)

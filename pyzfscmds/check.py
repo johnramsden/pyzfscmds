@@ -5,18 +5,19 @@ Startup checks
 import subprocess
 import platform
 
-import pyzfsutils.system.linux as zfslinux
-import pyzfsutils.system.freebsd as zfsfreebsd
+import pyzfscmds.system.linux as zfslinux
+import pyzfscmds.system.freebsd as zfsfreebsd
 
 
 def is_root_on_zfs():
+    """Check if running root on ZFS"""
     system = check_valid_system()
     if system == 'linux' and zfslinux.zfs_module_loaded() and zpool_exists():
         root_dataset = zfslinux.mountpoint_dataset("/")
     elif system == 'freebsd' and zfsfreebsd.zfs_module_loaded() and zpool_exists():
         root_dataset = zfsfreebsd.mountpoint_dataset("/")
     else:
-        raise RuntimeError(f"{system} is not yet supported by pyzfsutils\n")
+        raise RuntimeError(f"{system} is not yet supported by pyzfscmds\n")
 
     if root_dataset is None:
         raise RuntimeError("System is not booting off ZFS root dataset\n")
@@ -38,6 +39,6 @@ def zpool_exists() -> bool:
                               stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     except subprocess.CalledProcessError:
         raise RuntimeError(
-            "No pool found, a zpool is required to use pyzfsutils.\n")
+            "No pool found, a zpool is required to use pyzfscmds.\n")
 
     return True

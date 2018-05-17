@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import subprocess
 
-from pyzfsutils import __version__
+from pyzfscmds import __version__
 
 tests_require = [
     'coverage',
@@ -29,11 +29,11 @@ def vcs_release(version: str):
 
 
 setup(
-    name='pyzfsutils',
+    name='pyzfscmds',
     version=vcs_release(__version__),
     description='ZFS CLI Function Wrapper',
     long_description=readme(),
-    url='http://github.com/johnramsden/pyzfsutils',
+    url='http://github.com/johnramsden/pyzfscmds',
     author='John Ramsden',
     author_email='johnramsden@riseup.net',
     license='BSD-3-Clause',

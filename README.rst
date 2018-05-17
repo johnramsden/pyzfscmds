@@ -1,25 +1,25 @@
-pyzfsutils
+pyzfscmds
 ==========
 
-.. image:: https://travis-ci.com/johnramsden/pyzfsutils.svg?token=4X1vWwTyHTHCUwBTudyN&branch=release/v0.1.0
-    :target: https://travis-ci.com/johnramsden/pyzfsutils
+.. image:: https://travis-ci.com/johnramsden/pyzfscmds.svg?token=4X1vWwTyHTHCUwBTudyN&branch=release/v0.1.0
+    :target: https://travis-ci.com/johnramsden/pyzfscmds
 
 ZFS CLI Function Wrapper
 
 Requirements
 ------------
 
-``pyzfsutils`` requires python 3.6+, and ZFS.
+``pyzfscmds`` requires python 3.6+, and ZFS.
 
 Installing
 ----------
 
-``pyzfsutils`` can be installed by cloning the repo, and running the ``setup.py`` script.
+``pyzfscmds`` can be installed by cloning the repo, and running the ``setup.py`` script.
 
 .. code:: shell
 
-    $ git clone https://github.com/johnramsden/pyzfsutils
-    $ cd pyzfsutils
+    $ git clone https://github.com/johnramsden/pyzfscmds
+    $ cd pyzfscmds
     $ python setup.py install
 
 Testing
@@ -42,7 +42,7 @@ Testing all at once:
 
 .. code:: shell
 
-    $ pytest --pep8 --cov=pyzfsutils tests \
+    $ pytest --pep8 --cov=pyzfscmds tests \
                             --unsafe \
                             --zpool="${TEST_POOL}" \
                             --test-dataset="${PYTEST_DATASET}" \

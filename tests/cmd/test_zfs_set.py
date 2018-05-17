@@ -1,9 +1,9 @@
-import pytest
 import datetime
-
-import pyzfsutils.cmd
-
 import os
+
+import pytest
+
+import pyzfscmds.cmd
 
 module_env = os.path.basename(__file__).upper().rsplit('.', 1)[0]
 if module_env in os.environ:
@@ -23,10 +23,10 @@ require_test_dataset = pytest.mark.require_test_dataset
 def set_dataset(zpool, test_dataset):
     dataset_name = "/".join([zpool,
                              test_dataset,
-                             f"pyzfsutils-cloneds-{datetime.datetime.now().isoformat()}"])
+                             f"pyzfscmds-cloneds-{datetime.datetime.now().isoformat()}"])
 
-    pyzfsutils.cmd.zfs_create_dataset(dataset_name,
-                                      create_parent=True)
+    pyzfscmds.cmd.zfs_create_dataset(dataset_name,
+                                     create_parent=True)
 
     return dataset_name
 
@@ -37,9 +37,8 @@ def set_dataset(zpool, test_dataset):
 @require_zpool
 @require_test_dataset
 def test_zfs_set_successful(set_dataset, prop):
+    pyzfscmds.cmd.zfs_set(set_dataset, "=".join(prop))
 
-    pyzfsutils.cmd.zfs_set(set_dataset, "=".join(prop))
-
-    assert prop[1] in pyzfsutils.cmd.zfs_get(set_dataset,
-                                             columns=["value"],
-                                             properties=[prop[0]])
+    assert prop[1] in pyzfscmds.cmd.zfs_get(set_dataset,
+                                            columns=["value"],
+                                            properties=[prop[0]])

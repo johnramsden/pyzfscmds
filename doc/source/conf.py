@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# pyzfsutils documentation build configuration file, created by
+# pyzfscmds documentation build configuration file, created by
 # sphinx-quickstart on Wed May 16 17:52:18 2018.
 #
 # This file is execfile()d with the current directory set to its
@@ -49,7 +49,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'pyzfsutils'
+project = 'pyzfscmds'
 copyright = '2018, John Ramsden'
 author = 'John Ramsden'
 
@@ -115,7 +115,7 @@ html_sidebars = {
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'pyzfsutilsdoc'
+htmlhelp_basename = 'pyzfscmdsdoc'
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -142,7 +142,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'pyzfsutils.tex', 'pyzfsutils Documentation',
+    (master_doc, 'pyzfscmds.tex', 'pyzfscmds Documentation',
      'John Ramsden', 'manual'),
 ]
 
@@ -152,7 +152,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'pyzfsutils', 'pyzfsutils Documentation',
+    (master_doc, 'pyzfscmds', 'pyzfscmds Documentation',
      [author], 1)
 ]
 
@@ -163,10 +163,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'pyzfsutils', 'pyzfsutils Documentation',
-     author, 'pyzfsutils', 'One line description of project.',
+    (master_doc, 'pyzfscmds', 'pyzfscmds Documentation',
+     author, 'pyzfscmds', 'One line description of project.',
      'Miscellaneous'),
 ]
-
-
-

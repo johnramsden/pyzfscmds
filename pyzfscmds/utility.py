@@ -2,7 +2,7 @@
 
 from typing import Optional
 
-import pyzfsutils.cmd
+import pyzfscmds.cmd
 
 """
 ZFS helper functions
@@ -23,9 +23,9 @@ Check if clone, raise if not valid dataset
 
 def is_clone(dataset: str) -> bool:
     try:
-        origin = pyzfsutils.cmd.zfs_get(dataset,
-                                        properties=["origin"],
-                                        columns=["value"])
+        origin = pyzfscmds.cmd.zfs_get(dataset,
+                                       properties=["origin"],
+                                       columns=["value"])
     except RuntimeError:
         raise
 
@@ -40,7 +40,7 @@ def dataset_parent(dataset: str) -> Optional[str]:
         raise TypeError
 
     try:
-        pyzfsutils.cmd.zfs_list(dataset)
+        pyzfscmds.cmd.zfs_list(dataset)
     except RuntimeError:
         return None
 
@@ -52,7 +52,7 @@ def dataset_child_name(dataset: str) -> Optional[str]:
         raise TypeError
 
     try:
-        pyzfsutils.cmd.zfs_list(dataset)
+        pyzfscmds.cmd.zfs_list(dataset)
     except RuntimeError:
         return None
 
@@ -70,7 +70,7 @@ def snapshot_parent_dataset(snapshot: str) -> Optional[str]:
         return None
 
     try:
-        pyzfsutils.cmd.zfs_list(snapshot, zfs_types=["snapshot"])
+        pyzfscmds.cmd.zfs_list(snapshot, zfs_types=["snapshot"])
     except RuntimeError:
         return None
 
@@ -82,7 +82,7 @@ def dataset_exists(target: str, zfs_type: str = "filesystem") -> bool:
         raise TypeError
 
     try:
-        pyzfsutils.cmd.zfs_list(target, zfs_types=[zfs_type])
+        pyzfscmds.cmd.zfs_list(target, zfs_types=[zfs_type])
     except RuntimeError:
         return False
 

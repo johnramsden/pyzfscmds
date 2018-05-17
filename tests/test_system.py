@@ -1,8 +1,6 @@
-import pytest
-
-import pyzfsutils.system.agnostic
-
 import os
+
+import pytest
 
 module_env = os.path.basename(__file__).upper().rsplit('.', 1)[0]
 if module_env in os.environ:
@@ -15,6 +13,5 @@ require_zpool_root_mountpoint = pytest.mark.require_zpool_root_mountpoint
 
 """zfs agnostic tests"""
 
-
 # def test_mount():
-#     pyzfsutils.system.a
+#     pyzfscmds.system.a

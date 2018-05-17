@@ -1,8 +1,8 @@
+import os
+
 import pytest
 
-import pyzfsutils.cmd
-
-import os
+import pyzfscmds.cmd
 
 # Check for skip environment variable, to skip set TEST_ZFS_*="false"
 module_env = os.path.basename(__file__).upper().rsplit('.', 1)[0]
@@ -43,15 +43,15 @@ require_test_dataset = pytest.mark.require_test_dataset
 def test_zfs_get_successful(zpool, test_dataset, recursive, depth, scripting,
                             parsable, columns, zfs_types, source, properties):
     """ Test will pass if get successful"""
-    pyzfsutils.cmd.zfs_get("/".join([zpool, test_dataset]),
-                           recursive=recursive,
-                           depth=depth,
-                           scripting=scripting,
-                           parsable=parsable,
-                           columns=columns,
-                           zfs_types=zfs_types,
-                           source=source,
-                           properties=properties)
+    pyzfscmds.cmd.zfs_get("/".join([zpool, test_dataset]),
+                          recursive=recursive,
+                          depth=depth,
+                          scripting=scripting,
+                          parsable=parsable,
+                          columns=columns,
+                          zfs_types=zfs_types,
+                          source=source,
+                          properties=properties)
 
 
 # Incorrect options to test
@@ -80,14 +80,13 @@ def test_zfs_get_successful(zpool, test_dataset, recursive, depth, scripting,
 @require_test_dataset
 def test_zfs_get_fails(zpool, test_dataset, recursive, depth, scripting,
                        parsable, columns, zfs_types, source, properties):
-
     with pytest.raises(RuntimeError):
-        pyzfsutils.cmd.zfs_get("/".join([zpool, test_dataset]),
-                               recursive=recursive,
-                               depth=depth,
-                               scripting=scripting,
-                               parsable=parsable,
-                               columns=columns,
-                               zfs_types=zfs_types,
-                               source=source,
-                               properties=properties)
+        pyzfscmds.cmd.zfs_get("/".join([zpool, test_dataset]),
+                              recursive=recursive,
+                              depth=depth,
+                              scripting=scripting,
+                              parsable=parsable,
+                              columns=columns,
+                              zfs_types=zfs_types,
+                              source=source,
+                              properties=properties)

@@ -1,9 +1,9 @@
 import datetime
+import os
+
 import pytest
 
-import pyzfsutils.cmd
-
-import os
+import pyzfscmds.cmd
 
 module_env = os.path.basename(__file__).upper().rsplit('.', 1)[0]
 if module_env in os.environ:
@@ -21,8 +21,7 @@ require_test_dataset = pytest.mark.require_test_dataset
 @require_zpool
 @require_test_dataset
 def test_zfs_inherit_successful(zpool, test_dataset, prop):
+    dataset_name = f"pyzfscmds-{datetime.datetime.now().isoformat()}"
 
-    dataset_name = f"pyzfsutils-{datetime.datetime.now().isoformat()}"
-
-    pyzfsutils.cmd.zfs_create_dataset(f"{zpool}/{test_dataset}/{dataset_name}")
-    pyzfsutils.cmd.zfs_inherit(prop, f"{zpool}/{test_dataset}/{dataset_name}")
+    pyzfscmds.cmd.zfs_create_dataset(f"{zpool}/{test_dataset}/{dataset_name}")
+    pyzfscmds.cmd.zfs_inherit(prop, f"{zpool}/{test_dataset}/{dataset_name}")

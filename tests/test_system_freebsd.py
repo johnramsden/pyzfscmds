@@ -1,8 +1,8 @@
+import os
+
 import pytest
 
-import pyzfsutils.system.freebsd as zfsfreebsd
-
-import os
+import pyzfscmds.system.freebsd as zfsfreebsd
 
 module_env = os.path.basename(__file__).upper().rsplit('.', 1)[0]
 if module_env in os.environ:

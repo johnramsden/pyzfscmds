@@ -1,11 +1,11 @@
 """zfs snapshot tests"""
 
 import datetime
+import os
+
 import pytest
 
-import pyzfsutils.cmd
-
-import os
+import pyzfscmds.cmd
 
 module_env = os.path.basename(__file__).upper().rsplit('.', 1)[0]
 if module_env in os.environ:
@@ -20,7 +20,7 @@ require_test_dataset = pytest.mark.require_test_dataset
 # Incorrect options to test
 @pytest.mark.parametrize("snapname,properties", [
     (None, ["user_prop=on", "otheruser_prop=on"]),
-    (f"@pyzfsutils-test", ["user_prop=on", "otheruser_prop=on"]),
+    (f"@pyzfscmds-test", ["user_prop=on", "otheruser_prop=on"]),
     ("", ["user_prop=on", "otheruser_prop=on"]),
     ("@", ["user_prop=on", "otheruser_prop=on"])
 ])
@@ -30,8 +30,8 @@ require_test_dataset = pytest.mark.require_test_dataset
 @require_test_dataset
 def test_zfs_snapshot_name_fails(zpool, test_dataset, snapname, recursive, properties):
     with pytest.raises((TypeError, RuntimeError)):
-        pyzfsutils.cmd.zfs_snapshot("/".join([zpool, test_dataset]), snapname,
-                                    recursive=recursive, properties=properties)
+        pyzfscmds.cmd.zfs_snapshot("/".join([zpool, test_dataset]), snapname,
+                                   recursive=recursive, properties=properties)
 
 
 # Incorrect options to test
@@ -43,25 +43,25 @@ def test_zfs_snapshot_name_fails(zpool, test_dataset, snapname, recursive, prope
 @require_zpool
 @require_test_dataset
 def test_zfs_snapshot_property_fails(zpool, test_dataset, recursive, properties):
-    snapname = f"@pyzfsutils-{datetime.datetime.now().isoformat()}"
+    snapname = f"@pyzfscmds-{datetime.datetime.now().isoformat()}"
     with pytest.raises(RuntimeError):
-        pyzfsutils.cmd.zfs_snapshot("/".join([zpool, test_dataset]), snapname,
-                                    recursive=recursive, properties=properties)
+        pyzfscmds.cmd.zfs_snapshot("/".join([zpool, test_dataset]), snapname,
+                                   recursive=recursive, properties=properties)
 
 
 def test_zfs_snapshot_nonexistant_dataset_fails():
     with pytest.raises(RuntimeError):
-        pyzfsutils.cmd.zfs_snapshot(
-            "nonexistantdataset", f"@pyzfsutils-{datetime.datetime.now().isoformat()}")
+        pyzfscmds.cmd.zfs_snapshot(
+            "nonexistantdataset", f"@pyzfscmds-{datetime.datetime.now().isoformat()}")
 
 
 @pytest.mark.parametrize("recursive", [True, False])
 @pytest.mark.parametrize("properties", [None, [
-    "pyzfsutils:user_prop=on", "pyzfsutils:otheruser_prop=on"]])
+    "pyzfscmds:user_prop=on", "pyzfscmds:otheruser_prop=on"]])
 @require_zpool
 @require_test_dataset
 def test_zfs_snapshot_successful(zpool, test_dataset, recursive, properties):
-    snapname = f"pyzfsutils-{datetime.datetime.now().isoformat()}"
+    snapname = f"pyzfscmds-{datetime.datetime.now().isoformat()}"
     """ Test will pass if snapshot successful"""
-    pyzfsutils.cmd.zfs_snapshot("/".join([zpool, test_dataset]), snapname,
-                                recursive=recursive, properties=properties)
+    pyzfscmds.cmd.zfs_snapshot("/".join([zpool, test_dataset]), snapname,
+                               recursive=recursive, properties=properties)

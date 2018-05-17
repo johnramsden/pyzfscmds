@@ -1,9 +1,9 @@
-import pytest
 import datetime
-
-import pyzfsutils.cmd
-
 import os
+
+import pytest
+
+import pyzfscmds.cmd
 
 module_env = os.path.basename(__file__).upper().rsplit('.', 1)[0]
 if module_env in os.environ:
@@ -21,12 +21,11 @@ require_test_dataset = pytest.mark.require_test_dataset
 @require_zpool
 @require_test_dataset
 def test_zfs_rollback_successful(zpool, test_dataset):
-
     dataset_name = "/".join([zpool,
                              test_dataset,
-                             f"pyzfsutils-{datetime.datetime.now().isoformat()}"])
-    snapname = f"pyzfsutils-{datetime.datetime.now().isoformat()}"
+                             f"pyzfscmds-{datetime.datetime.now().isoformat()}"])
+    snapname = f"pyzfscmds-{datetime.datetime.now().isoformat()}"
 
-    pyzfsutils.cmd.zfs_create_dataset(dataset_name)
-    pyzfsutils.cmd.zfs_snapshot(dataset_name, snapname)
-    pyzfsutils.cmd.zfs_rollback("@".join([dataset_name, snapname]))
+    pyzfscmds.cmd.zfs_create_dataset(dataset_name)
+    pyzfscmds.cmd.zfs_snapshot(dataset_name, snapname)
+    pyzfscmds.cmd.zfs_rollback("@".join([dataset_name, snapname]))

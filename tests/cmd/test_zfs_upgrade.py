@@ -1,8 +1,8 @@
+import os
+
 import pytest
 
-import pyzfsutils.cmd
-
-import os
+import pyzfscmds.cmd
 
 module_env = os.path.basename(__file__).upper().rsplit('.', 1)[0]
 if module_env in os.environ:
@@ -18,10 +18,10 @@ require_test_dataset = pytest.mark.require_test_dataset
 
 @pytest.mark.parametrize("supported", [True, False])
 def test_zfs_upgrade_list_successful(supported):
-    pyzfsutils.cmd.zfs_upgrade_list(supported=supported)
+    pyzfscmds.cmd.zfs_upgrade_list(supported=supported)
 
 
 @require_zpool
 @require_test_dataset
 def test_zfs_upgrade_list_successful(zpool):
-    pyzfsutils.cmd.zfs_upgrade(target=zpool)
+    pyzfscmds.cmd.zfs_upgrade(target=zpool)
