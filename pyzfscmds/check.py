@@ -2,11 +2,11 @@
 Startup checks
 """
 
-import subprocess
 import platform
+import subprocess
 
-import pyzfscmds.system.linux as zfslinux
 import pyzfscmds.system.freebsd as zfsfreebsd
+import pyzfscmds.system.linux as zfslinux
 
 
 def is_root_on_zfs():

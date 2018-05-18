@@ -30,7 +30,7 @@ def vcs_release(version: str):
 
 setup(
     name='pyzfscmds',
-    version=vcs_release(__version__),
+    version=__version__,
     description='ZFS CLI Function Wrapper',
     long_description=readme(),
     url='http://github.com/johnramsden/pyzfscmds',
@@ -43,7 +43,7 @@ setup(
       'Programming Language :: Python :: 3.6',
     ],
     keywords='cli',
-    packages=find_packages(),
+    packages=find_packages(exclude=["*tests*", "test_*"]),
     install_requires=[],
     setup_requires=['pytest-runner'],
     tests_require=tests_require,

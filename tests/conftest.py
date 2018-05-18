@@ -16,7 +16,7 @@ def zfs_version_int(version):
     # Remove patch
     version_no_patch = version.split('-')[0]
 
-    l = [int(x, 10) for x in version_no_patch.split('.')]
+    l = [int(x, 10) for x in version_no_patch.split('.')[:3]]
     l.reverse()
     return sum(x * (100 ** i) for i, x in enumerate(l))
 

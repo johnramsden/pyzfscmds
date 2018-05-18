@@ -36,11 +36,12 @@ script:
   - |
     sudo env "PATH=$PATH" \
          pytest --cov=pyzfscmds tests \
-                                    --unsafe \
-                                    --zpool="${TEST_POOL}" \
-                                    --test-dataset="${PYTEST_DATASET}" \
-                                    --root-dataset="${TEST_POOL}/ROOT/default" \
-                                    --zpool-root-mountpoint="${ZPOOL_MOUNTPOINT}/root"
+                        --unsafe \
+                        --zpool="${TEST_POOL}" \
+                        --test-dataset="${PYTEST_DATASET}" \
+                        --root-dataset="${TEST_POOL}/ROOT/default" \
+                        --zpool-root-mountpoint="${ZPOOL_MOUNTPOINT}/root" \
+                        --zfs-version="$(modinfo zfs | grep -iw version | awk '{print $2}')"
 
 after_script:
   - sudo zfs list

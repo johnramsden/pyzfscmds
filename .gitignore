@@ -65,3 +65,7 @@ ENV/
 # IDE files
 .idea/
 .vscode/
+
+
+/packaging/arch/*
+!packaging/arch/PKGBUILD
