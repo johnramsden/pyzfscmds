@@ -1,4 +1,5 @@
 import pytest
+import platform
 
 import pyzfscmds.cmd
 import pyzfscmds.utility
@@ -43,6 +44,14 @@ def pytest_addoption(parser):
 def pytest_runtest_setup(item):
     if 'require_root_dataset' in item.keywords and not item.config.getoption("--root-dataset"):
         pytest.skip("Need --root-dataset option to run")
+
+    if 'require_freebsd' in item.keywords:
+        if platform.system().lower() != 'freebsd':
+            pytest.skip("Requires a FreeBSD system to run")
+
+    if 'require_linux' in item.keywords:
+        if platform.system().lower() != 'linux':
+            pytest.skip("Requires a Linux system to run")
 
     if 'require_zpool_root_mountpoint' in item.keywords and not item.config.getoption(
             "--zpool-root-mountpoint"):

@@ -7,10 +7,12 @@ def mountpoint_dataset(mountpoint: str):
     return dataset, or None if not found
     """
 
-    with open("/proc/mounts") as f:
-        mount = next((ds for ds in f.read().splitlines() if f"{mountpoint} zfs" in ds), None)
+    target = re.compile(r'\b.*\s*' + mountpoint + r'\s*zfs\b')
 
-    return None if mount is None else mount.split(" ")[0]
+    with open("/proc/mounts") as f:
+        mount = next((ds for ds in f.read().splitlines() if target.search(ds)), None)
+
+    return None if mount is None else mount.split()[0]
 
 
 def dataset_mountpoint(dataset: str):
@@ -18,12 +20,12 @@ def dataset_mountpoint(dataset: str):
     Get dataset mountpoint, or None if not found
     """
 
-    target = re.compile(r'\b' + dataset + r'\s' + r'/.*\szfs\b')
+    target = re.compile(r'\b' + dataset + r'\s/.*\szfs\b')
 
     with open("/proc/mounts") as f:
         mount = next((ds for ds in f.read().splitlines() if target.search(ds)), None)
 
-    return None if mount is None else mount.split(" ")[1]
+    return None if mount is None else mount.split()[1]
 
 
 def zfs_module_loaded():

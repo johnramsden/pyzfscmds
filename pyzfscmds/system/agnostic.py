@@ -1,6 +1,14 @@
-import pyzfscmds.check
+import platform
 
-system = pyzfscmds.check.check_valid_system()
+
+def check_valid_system():
+    valid_platforms = ['linux', 'freebsd']
+    current_system = platform.system().lower()
+
+    return current_system if current_system in valid_platforms else None
+
+
+system = check_valid_system()
 
 if system == "linux":
     import pyzfscmds.system.linux
