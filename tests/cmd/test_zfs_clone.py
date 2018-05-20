@@ -22,6 +22,9 @@ require_test_dataset = pytest.mark.require_test_dataset
 @require_test_dataset
 @pytest.fixture(scope="function")
 def clone_dataset(zpool, test_dataset):
+    """
+    Fixture to call if function requires a clone
+    """
     dataset_name = "/".join([zpool,
                              test_dataset,
                              f"pyzfscmds-cloneds-{datetime.datetime.now().isoformat()}"])

@@ -18,12 +18,10 @@ def dataset_mountpoint(dataset: str):
     Get dataset mountpoint, or None if not found
     """
 
-    target = re.compile(r'\b' + dataset + r'\b')
+    target = re.compile(r'\b' + dataset + r'\s' + r'/.*\szfs\b')
 
     with open("/proc/mounts") as f:
-        mount = next(
-            (ds for ds in f.read().splitlines() if all(
-                x in ds for x in [dataset, "zfs"]) and target.search(ds)), None)
+        mount = next((ds for ds in f.read().splitlines() if target.search(ds)), None)
 
     return None if mount is None else mount.split(" ")[1]
 

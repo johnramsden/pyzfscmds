@@ -31,7 +31,7 @@ def vcs_release(version: str):
 setup(
     name='pyzfscmds',
     version=__version__,
-    description='ZFS CLI Function Wrapper',
+    description='ZFS CLI Command Wrapper Library',
     long_description=readme(),
     url='http://github.com/johnramsden/pyzfscmds',
     author='John Ramsden',
@@ -42,7 +42,7 @@ setup(
       'License :: OSI Approved :: BSD License',
       'Programming Language :: Python :: 3.6',
     ],
-    keywords='cli',
+    keywords='library',
     packages=find_packages(exclude=["*tests*", "test_*"]),
     install_requires=[],
     setup_requires=['pytest-runner'],

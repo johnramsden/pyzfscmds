@@ -40,11 +40,9 @@ def dataset_mountpoint(dataset: str):
     except subprocess.CalledProcessError:
         raise RuntimeError(f"Failed to get mount data")
 
-    target = re.compile(r'\b' + dataset + r'\b')
+    target = re.compile(r'\b' + dataset + r'\s' + r'on\s/.*\szfs\b')
 
-    mount = next(
-       (ds for ds in mount_list if all(
-           x in ds for x in [dataset, "zfs"]) and target.search(ds)), None)
+    mount = next((ds for ds in mount_list if target.search(ds)), None)
 
     return None if mount is None else mount.split(" ")[2]
 
