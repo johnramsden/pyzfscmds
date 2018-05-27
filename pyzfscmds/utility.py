@@ -47,14 +47,15 @@ def dataset_parent(dataset: str) -> Optional[str]:
     return dataset.rsplit('/', 1)[0]
 
 
-def dataset_child_name(dataset: str) -> Optional[str]:
+def dataset_child_name(dataset: str, check_exists: bool = True) -> Optional[str]:
     if dataset is None:
         raise TypeError
 
-    try:
-        pyzfscmds.cmd.zfs_list(dataset)
-    except RuntimeError:
-        return None
+    if check_exists:
+        try:
+            pyzfscmds.cmd.zfs_list(dataset)
+        except RuntimeError:
+            return None
 
     return dataset.rsplit('/', 1)[-1]
 
