@@ -25,7 +25,22 @@ def dataset_mountpoint(dataset: str):
     with open("/proc/mounts") as f:
         mount = next((ds for ds in f.read().splitlines() if target.search(ds)), None)
 
-    return None if mount is None else mount.split()[1]
+    if mount is None:
+        return None
+
+    split_match = mount.split()
+
+    if split_match[3] == "zfs":
+        # User used a mountpoint with spaces, zfs is at index 3
+        mountpoint = " ".join([split_match[1], split_match[2]])
+    else:
+        # Space is in ASCII code, decode it
+        if "\\" in split_match[1]:
+            mountpoint = bytes(split_match[1], 'ascii').decode('unicode_escape')
+        else:
+            mountpoint = split_match[1]
+
+    return mountpoint
 
 
 def zfs_module_loaded():
