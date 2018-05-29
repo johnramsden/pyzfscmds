@@ -22,14 +22,11 @@ def mountpoint_dataset(mountpoint: str):
     except subprocess.CalledProcessError:
         raise RuntimeError(f"Failed to get mount data")
 
-    no_tabs = re.compile(r'[^\t]+')
+    target = re.compile(r'\b\w+\s+' + mountpoint + r'\s+zfs\b')
 
-    # Remove tabs from mount output leaving list of items
-    mount_line_list = [no_tabs.findall(l) for l in mount_list]
+    dataset = next((ds for ds in mount_list if target.search(ds)), None)
 
-    # Find first dataset match on mountpoint
-    return next(
-        (ds[0] for ds in mount_line_list if ds[2] == 'zfs' and ds[1] == mountpoint), None)
+    return dataset.split()[0] if dataset is not None else None
 
 
 def dataset_mountpoint(dataset: str):
@@ -42,13 +39,22 @@ def dataset_mountpoint(dataset: str):
     except subprocess.CalledProcessError:
         raise RuntimeError(f"Failed to get mount data")
 
-    no_tabs = re.compile(r'[^\t]+')
+    target = re.compile(r'\b' + dataset + r'\s/.*\szfs\b')
 
-    # Remove tabs from mount output leaving list of items
-    mount_line_list = [no_tabs.findall(l) for l in mount_list]
+    mount = next((ds for ds in mount_list if target.search(ds)), None)
 
-    # Find first match on dataset
-    return next((ds[1] for ds in mount_line_list if ds[2] == 'zfs' and ds[0] == dataset), None)
+    if mount is None:
+        return None
+
+    split_match = mount.split()
+
+    if split_match[3] == "zfs":
+        # User used a mountpoint with spaces, zfs is at index 3
+        mp = " ".join([split_match[1], split_match[2]])
+    else:
+        mp = split_match[1]
+
+    return mp
 
 
 def zfs_module_loaded():
