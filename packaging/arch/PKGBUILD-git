@@ -1,7 +1,7 @@
 # Maintainer: John Ramsden <johnramsden [at] riseup [dot] net>
 
 pkgname=python-pyzfscmds-git
-pkgver=r32.6b70fb5
+pkgver=r35.f3a3ae9
 pkgrel=1
 pkgdesc="ZFS CLI Function Wrapper"
 arch=('any')

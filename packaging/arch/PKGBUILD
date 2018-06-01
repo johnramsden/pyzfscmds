@@ -2,7 +2,7 @@
 
 _pkgname=pyzfscmds
 pkgname="python-${_pkgname}"
-pkgver=0.1.0
+pkgver=0.1.1
 _version_suffix="alpha"
 pkgrel=1
 pkgdesc="ZFS CLI Function Wrapper"
@@ -25,5 +25,5 @@ package() {
     python setup.py install --root="${pkgdir}/" --optimize=1 --skip-build
 
    	install -d "${pkgdir}/usr/share/license/${pkgname}"
-	install -m 755 "LICENSE" "${pkgdir}/usr/share/license/${pkgname}/LISCENSE"
+	install -m 755 "LICENSE" "${pkgdir}/usr/share/license/${pkgname}/LICENSE"
 }
