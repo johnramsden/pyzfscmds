@@ -23,14 +23,34 @@ def readme():
 
 
 def vcs_release(version: str):
-    return version + '+git.' + subprocess.check_output(
-                                    ['git', 'rev-parse', '--short', 'HEAD'],
+    """
+    If in git repo, get git version
+    """
+    try:
+        git_hash = subprocess.check_output(
+                        ['git', 'rev-parse', '--short', 'HEAD'],
+                        universal_newlines=True, stderr=subprocess.PIPE)
+    except subprocess.CalledProcessError:
+        return version
+
+    return version + '+git.' + git_hash
+
+
+def get_release_version(version: str):
+    has_tags = None
+    try:
+        has_tags = subprocess.check_output(
+                                    ['git', 'tag', '-l', '--points-at', 'HEAD'],
                                     universal_newlines=True, stderr=subprocess.PIPE)
+    except subprocess.CalledProcessError:
+        pass
+
+    return version if has_tags and has_tags.startswith("v") else vcs_release(version)
 
 
 setup(
     name='pyzfscmds',
-    version=__version__,
+    version=get_release_version(__version__),
     description='ZFS CLI Command Wrapper Library',
     long_description=readme(),
     url='http://github.com/johnramsden/pyzfscmds',
