@@ -7,13 +7,13 @@ pkgdesc="ZFS CLI Function Wrapper"
 arch=('any')
 url="http://github.com/johnramsden/pyzfscmds"
 license=('BSD' 'custom:BSD 3 clause')
-depends=('zfs-linux' 'python' 'python-setuptools')
+depends=('zfs' 'python' 'python-setuptools')
 makedepends=('git' 'python-pip')
 #optdepends=('systemdboot: Integration with bootloader')
 source=('python-pyzfscmds::git+https://github.com/johnramsden/pyzfscmds#branch=master')
-#validpgpkeys=('')
 md5sums=('SKIP')
 conflicts=('python-pyzfscmds')
+provides=('python-pyzfscmds')
 
 pkgver() {
     cd "${srcdir}/${pkgname%-git}"
