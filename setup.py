@@ -34,6 +34,7 @@ setup(
       'Development Status :: 3 - Beta',
       'License :: OSI Approved :: BSD License',
       'Programming Language :: Python :: 3.6',
+      'Programming Language :: Python :: 3.7',
     ],
     keywords='library',
     packages=find_packages(exclude=["*tests*", "test_*"]),
