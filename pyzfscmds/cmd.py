@@ -1,6 +1,7 @@
 """ZFS library"""
 
 import itertools
+import os
 import subprocess
 
 from typing import List
@@ -21,10 +22,12 @@ class _Command:
                  options: list = None,
                  properties: List[str] = None,
                  targets: List[str] = None,
-                 main_command: str = "zfs"):
+                 main_command: str = "zfs",
+                 env_variables_override: dict = None):
         self.main_command = main_command
         self.sub_command = sub_command
         self.targets = targets
+        self.env_variables_override = env_variables_override
 
         self.call_args = [o for o in options] if options is not None else []
 
@@ -53,6 +56,12 @@ class _Command:
 
     def run(self) -> str:
 
+        new_env = dict(os.environ)
+
+        if self.env_variables_override:
+            for key, value in self.env_variables_override.items():
+                new_env[key] = value
+
         arguments = self.call_args
 
         if hasattr(self, 'properties') and self.properties:
@@ -66,7 +75,8 @@ class _Command:
         try:
             output = subprocess.check_output(zfs_call,
                                              universal_newlines=True,
-                                             stderr=subprocess.PIPE)
+                                             stderr=subprocess.PIPE,
+                                             env=new_env)
         except subprocess.CalledProcessError as e:
             raise e
 
@@ -292,7 +302,8 @@ def zfs_get(target: str,
             columns: list = None,
             zfs_types: list = None,
             source: list = None,
-            properties: list = None) -> str:
+            properties: list = None,
+            env_variables_override: dict = None) -> str:
     """
      zfs get [-r|-d depth] [-Hp] [-o all | field[,field]...] [-t
      type[,type]...] [-s source[,source]...] all | property[,property]...
@@ -329,7 +340,8 @@ def zfs_get(target: str,
     else:
         raise RuntimeError(f"Cannot request no property type")
 
-    command = _Command("get", call_args, targets=[property_target, target])
+    command = _Command("get", call_args, targets=[property_target, target],
+                       env_variables_override=env_variables_override)
 
     command.argcheck_depth(depth)
     command.argcheck_columns(columns)
@@ -348,7 +360,8 @@ def zfs_list(target: str,
              columns: list = None,
              zfs_types: list = None,
              sort_properties_ascending: list = None,
-             sort_properties_descending: list = None) -> str:
+             sort_properties_descending: list = None,
+             env_variables_override: dict = None) -> str:
     """
      zfs list [-r|-d depth] [-Hp] [-o property[,property]...] [-t
      type[,type]...] [-s property]... [-S property]...
@@ -377,7 +390,8 @@ def zfs_list(target: str,
         call_args.extend(
             [p for prop in sort_properties_descending for p in ("-S", prop)])
 
-    command = _Command("list", call_args, targets=[target])
+    command = _Command("list", call_args, targets=[target],
+                       env_variables_override=env_variables_override)
     command.argcheck_depth(depth)
     command.argcheck_columns(columns)
 
