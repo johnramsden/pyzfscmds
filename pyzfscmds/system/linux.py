@@ -7,7 +7,7 @@ def mountpoint_dataset(mountpoint: str):
     return dataset, or None if not found
     """
 
-    target = re.compile(r'^.*\s*' + mountpoint + r'\s*zfs\b')
+    target = re.compile(r'^.*\s+' + mountpoint + r'\s+zfs\b')
 
     with open("/proc/mounts") as f:
         mount = next((ds for ds in f.read().splitlines() if target.search(ds)), None)
