@@ -1,13 +1,10 @@
 sudo: required
-dist: trusty
+dist: xenial
 
 language: python
 python:
   - "3.6"
-
-cache:
-  pip: true
-  custom_install: true
+  - "3.7"
 
 env:
   global:
@@ -16,8 +13,12 @@ env:
   - ZDISKS_SUBDIR="zfstests"
   - ZPOOL_MOUNTPOINT="/zpool"
 
+cache:
+  pip: true
+  custom_install: true
+
 before_install:
-  - sudo scripts/travis/ubuntu-14_04/setup_zfs_requirements.sh
+  - sudo scripts/travis/ubuntu/setup_zfs_requirements.sh
   - sudo scripts/travis/common/create_test_root.sh
   - |
     for e in $(echo "${TRAVIS_COMMIT_MESSAGE}" | grep -P -o '(?<=\[).*?(?=\])'); do
