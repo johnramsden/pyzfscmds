@@ -8,7 +8,7 @@ tests_require = [
     'pytest',
     'pytest-cov',
     'pytest-pep8',
-    'pytest-runner',
+    'pytest-pycodestyle',
     'tox',
 ]
 
@@ -20,6 +20,7 @@ dev_require = [
 def readme():
     with open('README.rst') as f:
         return f.read()
+
 
 setup(
     name='pyzfscmds',
