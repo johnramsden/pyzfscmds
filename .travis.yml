@@ -48,4 +48,4 @@ after_script:
   - sudo zfs list
   - modinfo zfs | grep -iw version
   - modinfo spl | grep -iw version
-  - sudo env "PATH=$PATH" pytest --pep8
+  - sudo env "PATH=$PATH" pytest --codestyle

@@ -7,7 +7,6 @@ tests_require = [
     'coverage',
     'pytest',
     'pytest-cov',
-    'pytest-pep8',
     'pytest-pycodestyle',
     'tox',
 ]
